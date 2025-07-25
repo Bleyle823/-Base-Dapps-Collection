@@ -1,4 +1,4 @@
-"use client";
+"";
 
 import { useState, useEffect } from "react";
 import type { NextPage } from "next";
@@ -22,7 +22,16 @@ import {
 } from "@heroicons/react/24/outline";
 import { PiggyBankEvents } from "./_components/PiggyBankEvents";
 
-const PiggyBankPage: NextPage = () => {
+export default function DeprecatedPiggyBankPage() {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="bg-base-100 rounded-3xl p-12 shadow-lg text-center">
+        <h1 className="text-3xl font-bold mb-4">PiggyBank Page Deprecated</h1>
+        <p className="text-lg">This route is no longer used. Please use the DAO features from the main navigation.</p>
+      </div>
+    </div>
+  );
+}
   const { address: connectedAddress } = useAccount();
   const [depositAmount, setDepositAmount] = useState("");
   const [lockDuration, setLockDuration] = useState("1day");

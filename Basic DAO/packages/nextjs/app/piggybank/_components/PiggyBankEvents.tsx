@@ -5,7 +5,11 @@ import { formatEther } from "viem";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { Address } from "~~/components/scaffold-eth";
 
-export const PiggyBankEvents = () => {
+// This file previously handled PiggyBank events. Replace with DAO events if needed.
+
+export const DAOEvents = () => {
+  return <div>DAO event hooks go here.</div>;
+};
   const { address: connectedAddress } = useAccount();
 
   const { data: depositEvents } = useScaffoldEventHistory({

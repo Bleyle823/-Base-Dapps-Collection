@@ -21,9 +21,19 @@ export const menuLinks: HeaderMenuLink[] = [
     href: "/",
   },
   {
-    label: "PiggyBank",
-    href: "/piggybank",
-    icon: <BanknotesIcon className="h-4 w-4" />,
+    label: "Proposals",
+    href: "/proposals",
+    icon: <DocumentTextIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Members",
+    href: "/members",
+    icon: <UserGroupIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Governance",
+    href: "/governance",
+    icon: <CogIcon className="h-4 w-4" />,
   },
   {
     label: "Debug Contracts",
@@ -31,6 +41,8 @@ export const menuLinks: HeaderMenuLink[] = [
     icon: <BugAntIcon className="h-4 w-4" />,
   },
 ];
+
+import { DocumentTextIcon, UserGroupIcon, CogIcon } from "@heroicons/react/24/outline";
 
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();
@@ -91,7 +103,7 @@ export const Header = () => {
             <Image alt="SE2 logo" className="cursor-pointer" fill src="/logo.svg" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">PiggyBank dApp</span>
+            <span className="font-bold leading-tight">Simple DAO dApp</span>
             <span className="text-xs">Time-locked savings</span>
           </div>
         </Link>

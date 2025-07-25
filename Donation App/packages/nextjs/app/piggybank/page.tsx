@@ -270,18 +270,6 @@ const PiggyBankPage: NextPage = () => {
           </div>
         )}
 
-        {/* Add Funds to Existing PiggyBank */}
-        {exists && (
-          <div className="bg-base-100 rounded-3xl p-8 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Add More Funds</h2>
-            <p className="text-base-content/70 mb-6">
-              Add more ETH to your existing piggy bank. The lock time will only extend if the new duration is longer.
-            </p>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="label">
-                  <span className="label-text">Additional Amount (ETH)</span>
                 </label>
                 <EtherInput
                   value={addFundsAmount}
@@ -323,4 +311,10 @@ const PiggyBankPage: NextPage = () => {
   );
 };
 
-export default PiggyBankPage; 
+import { redirect } from 'next/navigation';
+
+export default function PiggybankRedirect() {
+  redirect('/donation');
+  return null;
+}
+ 

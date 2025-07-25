@@ -5,13 +5,10 @@ import { formatEther } from "viem";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import { Address } from "~~/components/scaffold-eth";
 
-export const PiggyBankEvents = () => {
-  const { address: connectedAddress } = useAccount();
-
-  const { data: depositEvents } = useScaffoldEventHistory({
-    contractName: "PiggyBank",
-    eventName: "Deposit",
-    fromBlock: 0n,
+// PiggyBankEvents component is deprecated. Please use DonationEvents instead.
+export default function DeprecatedPiggyBankEvents() {
+  return <div>Piggy Bank events are no longer supported. Please visit the Donation App.</div>;
+}
     filters: { user: connectedAddress },
     blockData: true,
   });

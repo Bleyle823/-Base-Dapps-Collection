@@ -6,28 +6,52 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   8453: {
-    PiggyBank: {
-      address: "0x4C3f2c2909C0E677ef0403b6B1dF09348431631d",
+    SimpleDAO: {
+      address: "0xC3F336517fAB1c17BFCcDE6AF5B42c81D3ef5770",
       abi: [
         {
           inputs: [],
-          name: "NoDeposit",
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "AlreadyExecuted",
           type: "error",
         },
         {
           inputs: [],
-          name: "NoSavings",
+          name: "AlreadyMember",
           type: "error",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "timeRemaining",
-              type: "uint256",
-            },
-          ],
-          name: "StillLocked",
+          inputs: [],
+          name: "AlreadyVoted",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotMember",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "OnlyAdmin",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ProposalFailed",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ProposalNotFound",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "QuorumNotMet",
           type: "error",
         },
         {
@@ -36,28 +60,32 @@ const deployedContracts = {
           type: "error",
         },
         {
+          inputs: [],
+          name: "VotingEnded",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "VotingNotEnded",
+          type: "error",
+        },
+        {
           anonymous: false,
           inputs: [
             {
               indexed: true,
               internalType: "address",
-              name: "user",
+              name: "member",
               type: "address",
             },
             {
               indexed: false,
               internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "unlockTime",
+              name: "votingPower",
               type: "uint256",
             },
           ],
-          name: "Deposit",
+          name: "MemberAdded",
           type: "event",
         },
         {
@@ -66,17 +94,11 @@ const deployedContracts = {
             {
               indexed: true,
               internalType: "address",
-              name: "user",
+              name: "member",
               type: "address",
             },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
           ],
-          name: "PiggyBankSmashed",
+          name: "MemberRemoved",
           type: "event",
         },
         {
@@ -84,38 +106,160 @@ const deployedContracts = {
           inputs: [
             {
               indexed: true,
+              internalType: "uint256",
+              name: "proposalId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
               internalType: "address",
-              name: "user",
+              name: "proposer",
               type: "address",
             },
             {
               indexed: false,
+              internalType: "string",
+              name: "description",
+              type: "string",
+            },
+          ],
+          name: "ProposalCreated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
               internalType: "uint256",
-              name: "amount",
+              name: "proposalId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "success",
+              type: "bool",
+            },
+          ],
+          name: "ProposalExecuted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "proposalId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "voter",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "support",
+              type: "bool",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "votingPower",
               type: "uint256",
             },
           ],
-          name: "Withdrawal",
+          name: "VoteCast",
           type: "event",
         },
         {
           inputs: [],
-          name: "addFunds",
-          outputs: [],
-          stateMutability: "payable",
+          name: "MIN_VOTING_POWER",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "VOTING_PERIOD",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {
           inputs: [
             {
+              internalType: "address",
+              name: "_member",
+              type: "address",
+            },
+            {
               internalType: "uint256",
-              name: "_lockDurationInSeconds",
+              name: "_votingPower",
               type: "uint256",
             },
           ],
-          name: "createPiggyBank",
+          name: "addMember",
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "admin",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_description",
+              type: "string",
+            },
+            {
+              internalType: "uint256",
+              name: "_amount",
+              type: "uint256",
+            },
+            {
+              internalType: "address payable",
+              name: "_recipient",
+              type: "address",
+            },
+          ],
+          name: "createProposal",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "nonpayable",
           type: "function",
         },
         {
@@ -126,8 +270,21 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_proposalId",
+              type: "uint256",
+            },
+          ],
+          name: "executeProposal",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
-          name: "getCurrentTime",
+          name: "getBalance",
           outputs: [
             {
               internalType: "uint256",
@@ -140,51 +297,67 @@ const deployedContracts = {
         },
         {
           inputs: [
+            {
+              internalType: "uint256",
+              name: "_proposalId",
+              type: "uint256",
+            },
+          ],
+          name: "getProposal",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "proposer",
+              type: "address",
+            },
             {
               internalType: "string",
-              name: "duration",
+              name: "description",
               type: "string",
             },
-          ],
-          name: "getLockDuration",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getPiggyBank",
-          outputs: [
             {
               internalType: "uint256",
               name: "amount",
               type: "uint256",
             },
             {
+              internalType: "address",
+              name: "recipient",
+              type: "address",
+            },
+            {
               internalType: "uint256",
-              name: "unlockTime",
+              name: "votesFor",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "votesAgainst",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "startTime",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "endTime",
               type: "uint256",
             },
             {
               internalType: "bool",
-              name: "isUnlocked",
+              name: "executed",
               type: "bool",
             },
             {
               internalType: "bool",
-              name: "exists",
+              name: "isActive",
               type: "bool",
             },
           ],
@@ -192,18 +365,12 @@ const deployedContracts = {
           type: "function",
         },
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getTimeLeft",
+          inputs: [],
+          name: "getTotalVotingPower",
           outputs: [
             {
               internalType: "uint256",
-              name: "timeLeft",
+              name: "",
               type: "uint256",
             },
           ],
@@ -213,22 +380,146 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "uint256",
+              name: "_proposalId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "_voter",
+              type: "address",
+            },
+          ],
+          name: "hasVoted",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "voted",
+              type: "bool",
+            },
+            {
+              internalType: "bool",
+              name: "choice",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "memberCount",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
               internalType: "address",
               name: "",
               type: "address",
             },
           ],
-          name: "piggyBanks",
+          name: "members",
           outputs: [
+            {
+              internalType: "bool",
+              name: "isMember",
+              type: "bool",
+            },
+            {
+              internalType: "uint256",
+              name: "joinedAt",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "votingPower",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "nextProposalId",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "proposals",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "proposer",
+              type: "address",
+            },
+            {
+              internalType: "string",
+              name: "description",
+              type: "string",
+            },
             {
               internalType: "uint256",
               name: "amount",
               type: "uint256",
             },
             {
+              internalType: "address payable",
+              name: "recipient",
+              type: "address",
+            },
+            {
               internalType: "uint256",
-              name: "unlockTime",
+              name: "votesFor",
               type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "votesAgainst",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "startTime",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "endTime",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "executed",
+              type: "bool",
             },
             {
               internalType: "bool",
@@ -241,7 +532,57 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "withdraw",
+          name: "quorum",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_member",
+              type: "address",
+            },
+          ],
+          name: "removeMember",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_quorum",
+              type: "uint256",
+            },
+          ],
+          name: "setQuorum",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_proposalId",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "_support",
+              type: "bool",
+            },
+          ],
+          name: "vote",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -252,507 +593,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 33131137,
-    },
-  },
-  31337: {
-    PiggyBank: {
-      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      abi: [
-        {
-          inputs: [],
-          name: "NoDeposit",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "NoSavings",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "timeRemaining",
-              type: "uint256",
-            },
-          ],
-          name: "StillLocked",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "TransferFailed",
-          type: "error",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-          ],
-          name: "Deposit",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "PiggyBankSmashed",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "Withdrawal",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "addFunds",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_lockDurationInSeconds",
-              type: "uint256",
-            },
-          ],
-          name: "createPiggyBank",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "emergencyWithdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "getCurrentTime",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "duration",
-              type: "string",
-            },
-          ],
-          name: "getLockDuration",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getPiggyBank",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "isUnlocked",
-              type: "bool",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getTimeLeft",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "timeLeft",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "piggyBanks",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
-        },
-      ],
-      inheritedFunctions: {},
-      deployedOnBlock: 2,
-    },
-  },
-  11155111: {
-    PiggyBank: {
-      address: "0x45d98693F831809401AEc01694b9F6956ad553E8",
-      abi: [
-        {
-          inputs: [],
-          name: "NoDeposit",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "NoSavings",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "timeRemaining",
-              type: "uint256",
-            },
-          ],
-          name: "StillLocked",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "TransferFailed",
-          type: "error",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-          ],
-          name: "Deposit",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "PiggyBankSmashed",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "Withdrawal",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "addFunds",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_lockDurationInSeconds",
-              type: "uint256",
-            },
-          ],
-          name: "createPiggyBank",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "emergencyWithdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "getCurrentTime",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "duration",
-              type: "string",
-            },
-          ],
-          name: "getLockDuration",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getPiggyBank",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "isUnlocked",
-              type: "bool",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getTimeLeft",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "timeLeft",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "piggyBanks",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
-        },
-      ],
-      inheritedFunctions: {},
-      deployedOnBlock: 8807083,
+      deployedOnBlock: 33305934,
     },
   },
 } as const;

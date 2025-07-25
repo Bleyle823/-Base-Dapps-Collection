@@ -14,10 +14,19 @@ import * as Contracts from ".";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
+      name: "DonationApp",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.DonationApp__factory>;
+    getContractFactory(
       name: "PiggyBank",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PiggyBank__factory>;
 
+    getContractAt(
+      name: "DonationApp",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.DonationApp>;
     getContractAt(
       name: "PiggyBank",
       address: string | ethers.Addressable,
@@ -25,10 +34,19 @@ declare module "hardhat/types/runtime" {
     ): Promise<Contracts.PiggyBank>;
 
     deployContract(
+      name: "DonationApp",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.DonationApp>;
+    deployContract(
       name: "PiggyBank",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.PiggyBank>;
 
+    deployContract(
+      name: "DonationApp",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.DonationApp>;
     deployContract(
       name: "PiggyBank",
       args: any[],

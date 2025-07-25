@@ -22,19 +22,17 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("PiggyBank", {
+  await deploy("DonationApp", {
     from: deployer,
     // Contract constructor arguments
-    // args: [deployer], // Removed, PiggyBank has no constructor args
+    // args: [], // DonationApp has no constructor args
     log: true,
-    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-    // automatically mining the contract deployment transaction. There is no effect on live networks.
     autoMine: true,
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const piggyBank = await hre.ethers.getContract<Contract>("PiggyBank", deployer);
-  console.log("✅ PiggyBank deployed at:", await piggyBank.getAddress());
+  const donationApp = await hre.ethers.getContract<Contract>("DonationApp", deployer);
+  console.log("✅ DonationApp deployed at:", await donationApp.getAddress());
 };
 
 export default deployYourContract;

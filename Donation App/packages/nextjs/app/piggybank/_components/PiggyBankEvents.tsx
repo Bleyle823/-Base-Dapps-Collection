@@ -1,8 +1,9 @@
 "use client";
 
-import { formatEther } from "viem";
 import { useAccount } from "wagmi";
+import { formatEther } from "viem";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+import { Address } from "~~/components/scaffold-eth";
 
 export const PiggyBankEvents = () => {
   const { address: connectedAddress } = useAccount();
@@ -31,6 +32,11 @@ export const PiggyBankEvents = () => {
     blockData: true,
   });
 
+  const formatTimestamp = (timestamp: bigint): string => {
+    const date = new Date(Number(timestamp) * 1000);
+    return date.toLocaleString();
+  };
+
   const formatUnlockTime = (timestamp: bigint): string => {
     const date = new Date(Number(timestamp) * 1000);
     return date.toLocaleString();
@@ -57,15 +63,18 @@ export const PiggyBankEvents = () => {
               <div>
                 <h3 className="font-semibold text-success">💰 Deposit</h3>
                 <p className="text-sm text-base-content/70">
-                  Amount: {event.args.amount ? formatEther(event.args.amount) : "0"} ETH
+                  Amount: {formatEther(event.args.amount)} ETH
                 </p>
                 <p className="text-sm text-base-content/70">
-                  Unlocks: {event.args.unlockTime ? formatUnlockTime(event.args.unlockTime) : "Unknown"}
+                  Unlocks: {formatUnlockTime(event.args.unlockTime)}
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-base-content/50">
-                  Block: {event.blockNumber?.toString() || "Unknown"}
+                  {event.blockData?.timestamp ? formatTimestamp(event.blockData.timestamp) : "Unknown time"}
+                </p>
+                <p className="text-xs text-base-content/50">
+                  Block: {event.blockData?.blockNumber?.toString() || "Unknown"}
                 </p>
               </div>
             </div>
@@ -79,12 +88,15 @@ export const PiggyBankEvents = () => {
               <div>
                 <h3 className="font-semibold text-primary">💸 Withdrawal</h3>
                 <p className="text-sm text-base-content/70">
-                  Amount: {event.args.amount ? formatEther(event.args.amount) : "0"} ETH
+                  Amount: {formatEther(event.args.amount)} ETH
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-base-content/50">
-                  Block: {event.blockNumber?.toString() || "Unknown"}
+                  {event.blockData?.timestamp ? formatTimestamp(event.blockData.timestamp) : "Unknown time"}
+                </p>
+                <p className="text-xs text-base-content/50">
+                  Block: {event.blockData?.blockNumber?.toString() || "Unknown"}
                 </p>
               </div>
             </div>
@@ -98,15 +110,18 @@ export const PiggyBankEvents = () => {
               <div>
                 <h3 className="font-semibold text-warning">🚨 Emergency Withdrawal</h3>
                 <p className="text-sm text-base-content/70">
-                  Total Amount: {event.args.amount ? formatEther(event.args.amount) : "0"} ETH (10% penalty applied)
+                  Total Amount: {formatEther(event.args.amount)} ETH (10% penalty applied)
                 </p>
                 <p className="text-sm text-warning">
-                  Received: {event.args.amount ? formatEther((event.args.amount * 9n) / 10n) : "0"} ETH
+                  Received: {formatEther((event.args.amount * 9n) / 10n)} ETH
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-base-content/50">
-                  Block: {event.blockNumber?.toString() || "Unknown"}
+                  {event.blockData?.timestamp ? formatTimestamp(event.blockData.timestamp) : "Unknown time"}
+                </p>
+                <p className="text-xs text-base-content/50">
+                  Block: {event.blockData?.blockNumber?.toString() || "Unknown"}
                 </p>
               </div>
             </div>

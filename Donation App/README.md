@@ -1,88 +1,92 @@
-# 🏗 Scaffold-ETH 2
+# DonationApp 🚀
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+A decentralized donation platform built on **Base blockchain** that enables transparent, secure, and efficient crowdfunding campaigns.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## 🌟 Features
 
-⚙️ Built using NextJS, RainbowKit, Foundry/Hardhat, Wagmi, Viem, and Typescript.
+- **Create Campaigns**: Launch fundraising campaigns with goals, deadlines, and detailed descriptions
+- **Transparent Donations**: All donations are recorded on-chain with full transparency
+- **Goal Tracking**: Real-time progress tracking with automatic goal achievement detection
+- **Secure Withdrawals**: Only campaign beneficiaries can withdraw raised funds
+- **Platform Fees**: Built-in fee structure (2.5% default) for platform sustainability
+- **Campaign Management**: Creators can cancel campaigns (if no donations received)
+- **Donor History**: Track all donations made by users across campaigns
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+## 🔗 Deployed on Base
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+**Contract Address**: [`0xfdBF3FE50ba9B88b096f900fB5871cc1fc3611dd`](https://basescan.org/address/0xfdbf3fe50ba9b88b096f900fb5871cc1fc3611dd)
 
-## Requirements
+Base blockchain offers:
+- ⚡ Low transaction fees
+- 🚀 Fast confirmation times  
+- 🔒 Ethereum-level security
+- 🌍 Built for global accessibility
 
-Before you begin, you need to install the following tools:
+## 🛠️ Core Functions
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+### For Campaign Creators
+- `createCampaign()` - Launch new fundraising campaigns
+- `cancelCampaign()` - Cancel campaigns with no donations
+- `withdrawFunds()` - Withdraw raised funds (beneficiaries only)
 
-## Quickstart
+### For Donors
+- `donate()` - Contribute to campaigns with optional messages
+- `getCampaignDonations()` - View all donations for a campaign
+- `getUserDonations()` - Track personal donation history
 
-To get started with Scaffold-ETH 2, follow the steps below:
+### Public Views
+- `getCampaign()` - Get detailed campaign information
+- `getCampaignProgress()` - Check funding progress percentage
+- `getActiveCampaigns()` - Browse active campaigns
+- `getPlatformStats()` - View platform-wide statistics
 
-1. Install the latest version of Scaffold-ETH 2
+## 🏗️ Smart Contract Architecture
 
-```
-npx create-eth@latest
-```
-
-This command will install all the necessary packages and dependencies, so it might take a while.
-
-> [!NOTE]
-> You can also initialize your project with one of our extensions to add specific features or starter-kits. Learn more in our [extensions documentation](https://docs.scaffoldeth.io/extensions/).
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network that runs on your local machine and can be used for testing and development. Learn how to [customize your network configuration](https://docs.scaffoldeth.io/quick-start/environment#1-initialize-a-local-blockchain).
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. You can find more information about how to customize your contract and deployment script in our [documentation](https://docs.scaffoldeth.io/quick-start/environment#2-deploy-your-smart-contract).
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
+```solidity
+struct Campaign {
+    string title;
+    string description;
+    address payable beneficiary;
+    uint256 goal;
+    uint256 raised;
+    uint256 deadline;
+    bool active;
+    bool goalReached;
+    uint256 donorCount;
+    address creator;
+    uint256 createdAt;
+}
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+## 🔐 Security Features
 
-**What's next**:
+- **Access Control**: Role-based permissions for creators, beneficiaries, and platform owner
+- **Input Validation**: Comprehensive validation for all user inputs
+- **Reentrancy Protection**: Safe withdrawal patterns implemented
+- **Custom Errors**: Gas-efficient error handling
+- **Emergency Controls**: Platform owner emergency functions
 
-Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-start/environment#whats-next) to learn how to:
+## 📊 Platform Statistics
 
-- Edit your smart contracts
-- Edit your deployment scripts
-- Customize your frontend
-- Edit the app config
-- Writing and running tests
-- [Setting up external services and API keys](https://docs.scaffoldeth.io/deploying/deploy-smart-contracts#configuration-of-third-party-services-for-production-grade-apps)
+Track real-time metrics:
+- Total campaigns created
+- Total donations amount (ETH)
+- Total number of donations
+- Platform fee collection
+- Active campaign count
 
-## Documentation
+## 🚀 Getting Started
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
+1. **Connect Wallet**: Connect your Web3 wallet to Base network
+2. **Create Campaign**: Set title, description, goal, and deadline
+3. **Share Campaign**: Share your campaign ID with potential donors
+4. **Receive Donations**: Donors can contribute ETH directly to your campaign
+5. **Withdraw Funds**: Beneficiaries can withdraw raised funds anytime
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+## 📝 License
 
-## Contributing to Scaffold-ETH 2
+MIT License - Built for the decentralized future on Base blockchain.
 
-We welcome contributions to Scaffold-ETH 2!
+---
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+**Live Contract**: [View on BaseScan](https://basescan.org/address/0xfdbf3fe50ba9b88b096f900fb5871cc1fc3611dd)

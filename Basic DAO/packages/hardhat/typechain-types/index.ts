@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { PiggyBank } from "./PiggyBank";
+export type { SimpleDAO } from "./SimpleDAO";
 export * as factories from "./factories";
 export { PiggyBank__factory } from "./factories/PiggyBank__factory";
+export { SimpleDAO__factory } from "./factories/SimpleDAO__factory";

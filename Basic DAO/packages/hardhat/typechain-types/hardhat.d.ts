@@ -17,23 +17,41 @@ declare module "hardhat/types/runtime" {
       name: "PiggyBank",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.PiggyBank__factory>;
+    getContractFactory(
+      name: "SimpleDAO",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SimpleDAO__factory>;
 
     getContractAt(
       name: "PiggyBank",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.PiggyBank>;
+    getContractAt(
+      name: "SimpleDAO",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SimpleDAO>;
 
     deployContract(
       name: "PiggyBank",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.PiggyBank>;
+    deployContract(
+      name: "SimpleDAO",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SimpleDAO>;
 
     deployContract(
       name: "PiggyBank",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.PiggyBank>;
+    deployContract(
+      name: "SimpleDAO",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SimpleDAO>;
 
     // default types
     getContractFactory(

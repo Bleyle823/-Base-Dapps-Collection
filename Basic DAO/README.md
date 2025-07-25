@@ -1,88 +1,133 @@
-# 🏗 Scaffold-ETH 2
+# SimpleDAO
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+A decentralized autonomous organization (DAO) built with Solidity and Next.js. Create proposals, vote democratically, and execute decisions automatically on Base network.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## 🚀 Features
 
-⚙️ Built using NextJS, RainbowKit, Foundry/Hardhat, Wagmi, Viem, and Typescript.
+- **Democratic Governance**: Time-bound voting with configurable quorum
+- **Treasury Management**: Built-in ETH treasury for funding proposals  
+- **Web Interface**: Modern Next.js frontend for seamless interaction
+- **Base Network**: Low fees and fast transactions on Ethereum L2
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+## 📋 Contract Details
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+- **Network**: Base (Chain ID: 8453)
+- **Contract**: [`0xC3F336517fAB1c17BFCcDE6AF5B42c81D3ef5770`](https://basescan.org/address/0xc3f336517fab1c17bfccde6af5b42c81d3ef5770)
+- **Voting Period**: 7 days
+- **Default Quorum**: 51%
 
-## Requirements
+## 🛠 Tech Stack
 
-Before you begin, you need to install the following tools:
+- Solidity ^0.8.19 on Base Network
+- Next.js with TypeScript frontend
+- Hardhat development environment
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+## 🚀 Quick Start
 
-## Quickstart
+### Prerequisites
+- Node.js v16+, npm/yarn
+- MetaMask with Base network added
+- Base ETH for gas fees
 
-To get started with Scaffold-ETH 2, follow the steps below:
+### Installation
 
-1. Install the latest version of Scaffold-ETH 2
+```bash
+# Clone and install dependencies
+git clone https://github.com/your-username/SimpleDAO.git
+cd SimpleDAO
+npm install
 
-```
-npx create-eth@latest
-```
+# Install frontend dependencies
+cd nextjs && npm install
 
-This command will install all the necessary packages and dependencies, so it might take a while.
-
-> [!NOTE]
-> You can also initialize your project with one of our extensions to add specific features or starter-kits. Learn more in our [extensions documentation](https://docs.scaffoldeth.io/extensions/).
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
+# Set up environment
+cp .env.example .env.local
 ```
 
-This command starts a local Ethereum network that runs on your local machine and can be used for testing and development. Learn how to [customize your network configuration](https://docs.scaffoldeth.io/quick-start/environment#1-initialize-a-local-blockchain).
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. You can find more information about how to customize your contract and deployment script in our [documentation](https://docs.scaffoldeth.io/quick-start/environment#2-deploy-your-smart-contract).
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
+Add to `.env.local`:
+```env
+PRIVATE_KEY=your_private_key
+BASE_RPC_URL=https://mainnet.base.org
+NEXT_PUBLIC_CHAIN_ID=8453
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+### Run the App
 
-**What's next**:
+```bash
+# Start frontend
+cd nextjs
+npm run dev
+```
 
-Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-start/environment#whats-next) to learn how to:
+Visit [http://localhost:3000](http://localhost:3000) and connect to Base network.
 
-- Edit your smart contracts
-- Edit your deployment scripts
-- Customize your frontend
-- Edit the app config
-- Writing and running tests
-- [Setting up external services and API keys](https://docs.scaffoldeth.io/deploying/deploy-smart-contracts#configuration-of-third-party-services-for-production-grade-apps)
+## 📖 Usage
 
-## Documentation
+### For Admins
+- Add/remove members with voting power
+- Set quorum percentage  
+- Fund the DAO treasury
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
+### For Members
+- Create proposals (with optional fund transfers)
+- Vote during 7-day periods
+- Execute successful proposals
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+### Example Flow
+1. Admin adds members → 2. Member creates proposal → 3. Members vote → 4. Execute after voting ends
 
-## Contributing to Scaffold-ETH 2
+## 🌐 Base Network Setup
 
-We welcome contributions to Scaffold-ETH 2!
+Add Base to MetaMask:
+```
+Network: Base
+RPC: https://mainnet.base.org
+Chain ID: 8453
+Symbol: ETH
+Explorer: https://basescan.org
+```
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+**Contract Links:**
+- [View on Basescan](https://basescan.org/address/0xc3f336517fab1c17bfccde6af5b42c81d3ef5770)
+- [Read Contract](https://basescan.org/address/0xc3f336517fab1c17bfccde6af5b42c81d3ef5770#readContract)
+- [Write Contract](https://basescan.org/address/0xc3f336517fab1c17bfccde6af5b42c81d3ef5770#writeContract)
+
+## 🔧 Key Functions
+
+**Admin:** `addMember()`, `removeMember()`, `setQuorum()`  
+**Members:** `createProposal()`, `vote()`  
+**Anyone:** `executeProposal()`, `getProposal()`
+
+## 🧪 Development
+
+```bash
+# Test contracts
+npx hardhat test
+
+# Deploy to Base
+npx hardhat run scripts/deploy.js --network base
+
+# Verify on Basescan
+npx hardhat verify --network base [CONTRACT_ADDRESS]
+```
+
+## 🔐 Security
+
+- Admin-controlled membership
+- Double-vote prevention
+- Quorum validation before execution
+- Secure ETH transfers
+
+## 📄 License
+
+MIT License
+
+## 🤝 Contributing
+
+1. Fork the repo
+2. Create feature branch
+3. Submit pull request
+
+---
+
+**⚠️ Disclaimer**: Experimental software. Audit before mainnet use.

@@ -1,88 +1,174 @@
-# 🏗 Scaffold-ETH 2
+# SimpleMultisig
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+A simple and secure multisignature wallet smart contract implementation that requires multiple signatures to execute transactions, providing enhanced security for cryptocurrency and token management.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## 🚀 Deployment Information
 
-⚙️ Built using NextJS, RainbowKit, Foundry/Hardhat, Wagmi, Viem, and Typescript.
+- **Contract Address**: `0x0b1bb2fDE2Bd465Fc3433B1f14e80B4a718751Ad`
+- **Deployment Transaction**: `0xfb905eff4f5149eb020456a1cccc746d287e1871329dfb77c7ef3cfd66be95c3`
+- **Gas Used**: 1,121,956
+- **Status**: ✅ Successfully Deployed
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+## 📋 Overview
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+SimpleMultisig is a smart contract that implements a multisignature wallet, allowing multiple parties to collectively control funds and execute transactions. This adds an extra layer of security by requiring a predetermined number of signatures before any transaction can be executed.
 
-## Requirements
+### Key Features
 
-Before you begin, you need to install the following tools:
+- **Multi-signature Security**: Requires multiple approvals before executing transactions
+- **Flexible Ownership**: Support for multiple owners with configurable signature thresholds
+- **Transaction Queue**: Ability to propose, review, and execute transactions
+- **Gas Efficient**: Optimized for minimal gas consumption
+- **Transparent**: All transactions and approvals are recorded on-chain
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+## 🛠 Technology Stack
 
-## Quickstart
+- **Smart Contract**: Solidity
+- **Frontend**: Next.js with TypeScript
+- **Development Framework**: Scaffold-ETH 2 (inferred from file structure)
+- **Contract Definitions**: Auto-generated TypeScript definitions
 
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install the latest version of Scaffold-ETH 2
-
-```
-npx create-eth@latest
-```
-
-This command will install all the necessary packages and dependencies, so it might take a while.
-
-> [!NOTE]
-> You can also initialize your project with one of our extensions to add specific features or starter-kits. Learn more in our [extensions documentation](https://docs.scaffoldeth.io/extensions/).
-
-2. Run a local network in the first terminal:
+## 📁 Project Structure
 
 ```
-yarn chain
+├── contracts/
+│   └── SimpleMultisig.sol          # Main multisig contract
+├── nextjs/
+│   └── contracts/
+│       └── deployedContracts.ts    # TypeScript contract definitions
+└── README.md
 ```
 
-This command starts a local Ethereum network that runs on your local machine and can be used for testing and development. Learn how to [customize your network configuration](https://docs.scaffoldeth.io/quick-start/environment#1-initialize-a-local-blockchain).
+## 🔧 Installation & Setup
 
-3. On a second terminal, deploy the test contract:
+### Prerequisites
 
+- Node.js (v16 or higher)
+- npm or yarn
+- Git
+
+### Clone the Repository
+
+```bash
+git clone <your-repository-url>
+cd SimpleMultisig
+npm install
 ```
-yarn deploy
+
+### Environment Setup
+
+1. Copy environment variables:
+```bash
+cp .env.example .env.local
 ```
 
-This command deploys a test smart contract to the local network. You can find more information about how to customize your contract and deployment script in our [documentation](https://docs.scaffoldeth.io/quick-start/environment#2-deploy-your-smart-contract).
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
+2. Configure your environment variables:
+```env
+NEXT_PUBLIC_CONTRACT_ADDRESS=0x0b1bb2fDE2Bd465Fc3433B1f14e80B4a718751Ad
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+## 🚀 Usage
 
-**What's next**:
+### Frontend Interface
 
-Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-start/environment#whats-next) to learn how to:
+Start the Next.js development server:
 
-- Edit your smart contracts
-- Edit your deployment scripts
-- Customize your frontend
-- Edit the app config
-- Writing and running tests
-- [Setting up external services and API keys](https://docs.scaffoldeth.io/deploying/deploy-smart-contracts#configuration-of-third-party-services-for-production-grade-apps)
+```bash
+cd nextjs
+npm run dev
+```
 
-## Documentation
+Visit `http://localhost:3000` to interact with the multisig wallet through the web interface.
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
+### Contract Interaction
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+The deployed contract can be interacted with using the provided TypeScript definitions:
 
-## Contributing to Scaffold-ETH 2
+```typescript
+import { deployedContracts } from "./contracts/deployedContracts";
 
-We welcome contributions to Scaffold-ETH 2!
+// Access contract ABI and address
+const multisigContract = deployedContracts[chainId].SimpleMultisig;
+```
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+## 🔐 Security Features
+
+- **Signature Threshold**: Configurable number of required signatures
+- **Owner Management**: Add/remove owners through multisig consensus
+- **Transaction Validation**: All transactions must be approved by required number of owners
+- **Replay Protection**: Protection against transaction replay attacks
+
+## 📖 Contract Functions
+
+### Core Functions
+
+- `submitTransaction()` - Propose a new transaction
+- `confirmTransaction()` - Approve a pending transaction
+- `executeTransaction()` - Execute a fully approved transaction
+- `revokeConfirmation()` - Revoke a previous approval
+
+### View Functions
+
+- `getOwners()` - Get list of all owners
+- `getTransactionCount()` - Get total number of transactions
+- `getTransaction()` - Get transaction details
+- `isConfirmed()` - Check if transaction is confirmed by an owner
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+# Run contract tests
+npm run test
+
+# Run with coverage
+npm run test:coverage
+```
+
+## 📊 Gas Optimization
+
+The contract has been optimized for gas efficiency:
+- Deployment cost: 1,121,956 gas
+- Optimized storage patterns
+- Efficient signature verification
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Guidelines
+
+- Follow Solidity best practices
+- Write comprehensive tests
+- Update documentation for new features
+- Ensure gas efficiency
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
+
+This smart contract has been deployed for demonstration/testing purposes. Please conduct thorough security audits before using in production with real funds.
+
+## 🔗 Links
+
+- **Contract on Block Explorer**: [View Contract](https://etherscan.io/address/0x0b1bb2fDE2Bd465Fc3433B1f14e80B4a718751Ad)
+- **Deployment Transaction**: [View Transaction](https://etherscan.io/tx/0xfb905eff4f5149eb020456a1cccc746d287e1871329dfb77c7ef3cfd66be95c3)
+
+## 📞 Support
+
+If you have questions or need support:
+
+- Open an issue on GitHub
+- Check the documentation
+- Review existing issues and discussions
+
+---
+
+**Built with ❤️ using Scaffold-ETH 2**

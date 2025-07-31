@@ -1,598 +1,463 @@
-<<<<<<< HEAD
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title SimpleDAO
- * @dev A basic DAO contract with proposal creation, voting, and execution capabilities
+ * @dev A simple DAO contract with proposal creation, voting, and execution
  */
-contract SimpleDAO {
+contract SimpleDAO is ReentrancyGuard, Ownable {
+    // Governance token
+    IERC20 public governanceToken;
+    
+    // Proposal structure
     struct Proposal {
         uint256 id;
         address proposer;
+        string title;
         string description;
-        uint256 amount; // Amount of ETH to transfer (if applicable)
-        address payable recipient; // Recipient of funds (if applicable)
-        uint256 votesFor;
-        uint256 votesAgainst;
+        address target;
+        uint256 value;
+        bytes data;
         uint256 startTime;
         uint256 endTime;
+        uint256 votesFor;
+        uint256 votesAgainst;
+        uint256 votesAbstain;
         bool executed;
-        bool exists;
-        mapping(address => bool) hasVoted;
-        mapping(address => bool) voteChoice; // true = for, false = against
+        bool canceled;
+        ProposalState state;
     }
-
-    struct Member {
-        bool isMember;
-        uint256 joinedAt;
-        uint256 votingPower; // Number of votes they can cast
+    
+    // Vote structure
+    struct Vote {
+        bool hasVoted;
+        VoteType voteType;
+        uint256 weight;
+        uint256 timestamp;
     }
-
+    
+    // Enums
+    enum ProposalState { Pending, Active, Succeeded, Defeated, Executed, Canceled }
+    enum VoteType { Against, For, Abstain }
+    
+    // State variables
     mapping(uint256 => Proposal) public proposals;
-    mapping(address => Member) public members;
+    mapping(uint256 => mapping(address => Vote)) public votes;
+    mapping(address => uint256) public membershipTimestamp;
     
-    uint256 public nextProposalId = 1;
-    uint256 public memberCount;
-    uint256 public constant VOTING_PERIOD = 7 days;
-    uint256 public constant MIN_VOTING_POWER = 1;
-    uint256 public quorum = 51; // 51% quorum required
+    uint256 public proposalCounter;
+    uint256 public votingDelay = 1 days; // Time before voting starts
+    uint256 public votingPeriod = 7 days; // Voting duration
+    uint256 public proposalThreshold = 1000 * 10**18; // Min tokens to propose
+    uint256 public quorumThreshold = 10; // 10% of total supply
+    uint256 public passingThreshold = 50; // 50% of votes needed to pass
     
-    address public admin;
+    // Treasury
+    uint256 public treasuryBalance;
     
+    // Events
     event ProposalCreated(
         uint256 indexed proposalId,
         address indexed proposer,
-        string description
+        string title,
+        uint256 startTime,
+        uint256 endTime
     );
-    
     event VoteCast(
         uint256 indexed proposalId,
         address indexed voter,
-        bool support,
-        uint256 votingPower
+        VoteType voteType,
+        uint256 weight
     );
+    event ProposalExecuted(uint256 indexed proposalId);
+    event ProposalCanceled(uint256 indexed proposalId);
+    event MemberJoined(address indexed member, uint256 timestamp);
+    event FundsDeposited(address indexed depositor, uint256 amount);
+    event FundsWithdrawn(address indexed recipient, uint256 amount);
     
-    event ProposalExecuted(uint256 indexed proposalId, bool success);
-    
-    event MemberAdded(address indexed member, uint256 votingPower);
-    event MemberRemoved(address indexed member);
-    
-    error NotMember();
-    error ProposalNotFound();
-    error VotingEnded();
-    error VotingNotEnded();
+    // Custom errors
+    error InsufficientTokens(uint256 required, uint256 actual);
+    error ProposalNotActive();
     error AlreadyVoted();
-    error AlreadyExecuted();
-    error QuorumNotMet();
-    error ProposalFailed();
-    error OnlyAdmin();
-    error AlreadyMember();
-    error TransferFailed();
-
-    modifier onlyMember() {
-        if (!members[msg.sender].isMember) revert NotMember();
-        _;
-    }
-
-    modifier onlyAdmin() {
-        if (msg.sender != admin) revert OnlyAdmin();
-        _;
-    }
-
-    modifier proposalExists(uint256 _proposalId) {
-        if (!proposals[_proposalId].exists) revert ProposalNotFound();
-        _;
-    }
-
-    constructor() {
-        admin = msg.sender;
-        // Add admin as first member
-        members[msg.sender] = Member({
-            isMember: true,
-            joinedAt: block.timestamp,
-            votingPower: 1
-        });
-        memberCount = 1;
-    }
-
+    error ProposalNotSucceeded();
+    error ProposalAlreadyExecuted();
+    error ExecutionFailed();
+    error NotAuthorized();
+    error InvalidProposal();
+    error InsufficientTreasuryFunds();
+    
     /**
-     * @dev Add a new member to the DAO (only admin can add members initially)
+     * @dev Constructor
+     * @param _governanceToken Address of the governance token
      */
-    function addMember(address _member, uint256 _votingPower) external onlyAdmin {
-        if (members[_member].isMember) revert AlreadyMember();
-        require(_votingPower >= MIN_VOTING_POWER, "Voting power too low");
-
-        members[_member] = Member({
-            isMember: true,
-            joinedAt: block.timestamp,
-            votingPower: _votingPower
-        });
-        
-        memberCount++;
-        emit MemberAdded(_member, _votingPower);
+    constructor(address _governanceToken) {
+        require(_governanceToken != address(0), "Invalid token address");
+        governanceToken = IERC20(_governanceToken);
+        treasuryBalance = 0;
     }
-
+    
     /**
-     * @dev Remove a member from the DAO
+     * @dev Join the DAO as a member
      */
-    function removeMember(address _member) external onlyAdmin {
-        if (!members[_member].isMember) revert NotMember();
+    function joinDAO() external {
+        require(governanceToken.balanceOf(msg.sender) > 0, "Must hold governance tokens");
         
-        delete members[_member];
-        memberCount--;
-        emit MemberRemoved(_member);
+        if (membershipTimestamp[msg.sender] == 0) {
+            membershipTimestamp[msg.sender] = block.timestamp;
+            emit MemberJoined(msg.sender, block.timestamp);
+        }
     }
-
+    
     /**
      * @dev Create a new proposal
+     * @param title Proposal title
+     * @param description Proposal description
+     * @param target Target contract address (use address(0) for treasury operations)
+     * @param value ETH value to send
+     * @param data Call data
      */
     function createProposal(
-        string memory _description,
-        uint256 _amount,
-        address payable _recipient
-    ) external onlyMember returns (uint256) {
-        uint256 proposalId = nextProposalId++;
-        
-        Proposal storage newProposal = proposals[proposalId];
-        newProposal.id = proposalId;
-        newProposal.proposer = msg.sender;
-        newProposal.description = _description;
-        newProposal.amount = _amount;
-        newProposal.recipient = _recipient;
-        newProposal.startTime = block.timestamp;
-        newProposal.endTime = block.timestamp + VOTING_PERIOD;
-        newProposal.exists = true;
-
-        emit ProposalCreated(proposalId, msg.sender, _description);
-        return proposalId;
-    }
-
-    /**
-     * @dev Vote on a proposal
-     */
-    function vote(uint256 _proposalId, bool _support) 
-        external 
-        onlyMember 
-        proposalExists(_proposalId) 
-    {
-        Proposal storage proposal = proposals[_proposalId];
-        
-        if (block.timestamp > proposal.endTime) revert VotingEnded();
-        if (proposal.hasVoted[msg.sender]) revert AlreadyVoted();
-
-        proposal.hasVoted[msg.sender] = true;
-        proposal.voteChoice[msg.sender] = _support;
-        
-        uint256 votingPower = members[msg.sender].votingPower;
-        
-        if (_support) {
-            proposal.votesFor += votingPower;
-        } else {
-            proposal.votesAgainst += votingPower;
-        }
-
-        emit VoteCast(_proposalId, msg.sender, _support, votingPower);
-    }
-
-    /**
-     * @dev Execute a proposal after voting period ends
-     */
-    function executeProposal(uint256 _proposalId) 
-        external 
-        proposalExists(_proposalId) 
-    {
-        Proposal storage proposal = proposals[_proposalId];
-        
-        if (block.timestamp <= proposal.endTime) revert VotingNotEnded();
-        if (proposal.executed) revert AlreadyExecuted();
-
-        // Calculate total votes and check quorum
-        uint256 totalVotes = proposal.votesFor + proposal.votesAgainst;
-        uint256 totalVotingPower = getTotalVotingPower();
-        
-        if (totalVotes * 100 < totalVotingPower * quorum) revert QuorumNotMet();
-        if (proposal.votesFor <= proposal.votesAgainst) revert ProposalFailed();
-
-        proposal.executed = true;
-
-        bool success = true;
-        // Execute the proposal (transfer funds if specified)
-        if (proposal.amount > 0 && proposal.recipient != address(0)) {
-            if (address(this).balance >= proposal.amount) {
-                (bool sent, ) = proposal.recipient.call{value: proposal.amount}("");
-                if (!sent) success = false;
-            } else {
-                success = false;
-            }
-        }
-
-        emit ProposalExecuted(_proposalId, success);
-    }
-
-    /**
-     * @dev Get proposal details
-     */
-    function getProposal(uint256 _proposalId) external view returns (
-        uint256 id,
-        address proposer,
+        string memory title,
         string memory description,
-        uint256 amount,
-        address recipient,
-        uint256 votesFor,
-        uint256 votesAgainst,
-        uint256 startTime,
-        uint256 endTime,
-        bool executed,
-        bool isActive
-    ) {
-        Proposal storage proposal = proposals[_proposalId];
-        return (
-            proposal.id,
-            proposal.proposer,
-            proposal.description,
-            proposal.amount,
-            proposal.recipient,
-            proposal.votesFor,
-            proposal.votesAgainst,
-            proposal.startTime,
-            proposal.endTime,
-            proposal.executed,
-            block.timestamp <= proposal.endTime && !proposal.executed
-        );
-    }
-
-    /**
-     * @dev Check if an address has voted on a proposal
-     */
-    function hasVoted(uint256 _proposalId, address _voter) 
-        external 
-        view 
-        returns (bool voted, bool choice) 
-    {
-        return (
-            proposals[_proposalId].hasVoted[_voter],
-            proposals[_proposalId].voteChoice[_voter]
-        );
-    }
-
-    /**
-     * @dev Get total voting power of all members
-     */
-    function getTotalVotingPower() public view returns (uint256) {
-        // In a real implementation, you'd want to track this more efficiently
-        // For simplicity, this assumes each member has equal voting power
-        // You could extend this to sum up all members' voting power
-        uint256 total = 0;
-        // Note: This is a simplified version. In practice, you'd need to iterate
-        // through all members or maintain a running total
-        return memberCount; // Simplified - assumes each member has 1 vote
-    }
-
-    /**
-     * @dev Set quorum percentage (only admin)
-     */
-    function setQuorum(uint256 _quorum) external onlyAdmin {
-        require(_quorum > 0 && _quorum <= 100, "Invalid quorum percentage");
-        quorum = _quorum;
-    }
-
-    /**
-     * @dev Allow the DAO to receive ETH
-     */
-    receive() external payable {}
-
-    /**
-     * @dev Get contract balance
-     */
-    function getBalance() external view returns (uint256) {
-        return address(this).balance;
-    }
-
-    /**
-     * @dev Emergency withdraw (only admin) - for initial setup phase
-     */
-    function emergencyWithdraw() external onlyAdmin {
-        (bool success, ) = payable(admin).call{value: address(this).balance}("");
-        if (!success) revert TransferFailed();
-    }
-=======
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
-
-/**
- * @title SimpleDAO
- * @dev A basic DAO contract with proposal creation, voting, and execution capabilities
- */
-contract SimpleDAO {
-    struct Proposal {
-        uint256 id;
-        address proposer;
-        string description;
-        uint256 amount; // Amount of ETH to transfer (if applicable)
-        address payable recipient; // Recipient of funds (if applicable)
-        uint256 votesFor;
-        uint256 votesAgainst;
-        uint256 startTime;
-        uint256 endTime;
-        bool executed;
-        bool exists;
-        mapping(address => bool) hasVoted;
-        mapping(address => bool) voteChoice; // true = for, false = against
-    }
-
-    struct Member {
-        bool isMember;
-        uint256 joinedAt;
-        uint256 votingPower; // Number of votes they can cast
-    }
-
-    mapping(uint256 => Proposal) public proposals;
-    mapping(address => Member) public members;
-    
-    uint256 public nextProposalId = 1;
-    uint256 public memberCount;
-    uint256 public constant VOTING_PERIOD = 7 days;
-    uint256 public constant MIN_VOTING_POWER = 1;
-    uint256 public quorum = 51; // 51% quorum required
-    
-    address public admin;
-    
-    event ProposalCreated(
-        uint256 indexed proposalId,
-        address indexed proposer,
-        string description
-    );
-    
-    event VoteCast(
-        uint256 indexed proposalId,
-        address indexed voter,
-        bool support,
-        uint256 votingPower
-    );
-    
-    event ProposalExecuted(uint256 indexed proposalId, bool success);
-    
-    event MemberAdded(address indexed member, uint256 votingPower);
-    event MemberRemoved(address indexed member);
-    
-    error NotMember();
-    error ProposalNotFound();
-    error VotingEnded();
-    error VotingNotEnded();
-    error AlreadyVoted();
-    error AlreadyExecuted();
-    error QuorumNotMet();
-    error ProposalFailed();
-    error OnlyAdmin();
-    error AlreadyMember();
-    error TransferFailed();
-
-    modifier onlyMember() {
-        if (!members[msg.sender].isMember) revert NotMember();
-        _;
-    }
-
-    modifier onlyAdmin() {
-        if (msg.sender != admin) revert OnlyAdmin();
-        _;
-    }
-
-    modifier proposalExists(uint256 _proposalId) {
-        if (!proposals[_proposalId].exists) revert ProposalNotFound();
-        _;
-    }
-
-    constructor() {
-        admin = msg.sender;
-        // Add admin as first member
-        members[msg.sender] = Member({
-            isMember: true,
-            joinedAt: block.timestamp,
-            votingPower: 1
-        });
-        memberCount = 1;
-    }
-
-    /**
-     * @dev Add a new member to the DAO (only admin can add members initially)
-     */
-    function addMember(address _member, uint256 _votingPower) external onlyAdmin {
-        if (members[_member].isMember) revert AlreadyMember();
-        require(_votingPower >= MIN_VOTING_POWER, "Voting power too low");
-
-        members[_member] = Member({
-            isMember: true,
-            joinedAt: block.timestamp,
-            votingPower: _votingPower
+        address target,
+        uint256 value,
+        bytes memory data
+    ) external returns (uint256) {
+        uint256 proposerBalance = governanceToken.balanceOf(msg.sender);
+        if (proposerBalance < proposalThreshold) {
+            revert InsufficientTokens(proposalThreshold, proposerBalance);
+        }
+        
+        require(membershipTimestamp[msg.sender] != 0, "Must be a DAO member");
+        require(bytes(title).length > 0, "Title cannot be empty");
+        
+        uint256 proposalId = proposalCounter++;
+        uint256 startTime = block.timestamp + votingDelay;
+        uint256 endTime = startTime + votingPeriod;
+        
+        proposals[proposalId] = Proposal({
+            id: proposalId,
+            proposer: msg.sender,
+            title: title,
+            description: description,
+            target: target,
+            value: value,
+            data: data,
+            startTime: startTime,
+            endTime: endTime,
+            votesFor: 0,
+            votesAgainst: 0,
+            votesAbstain: 0,
+            executed: false,
+            canceled: false,
+            state: ProposalState.Pending
         });
         
-        memberCount++;
-        emit MemberAdded(_member, _votingPower);
-    }
-
-    /**
-     * @dev Remove a member from the DAO
-     */
-    function removeMember(address _member) external onlyAdmin {
-        if (!members[_member].isMember) revert NotMember();
-        
-        delete members[_member];
-        memberCount--;
-        emit MemberRemoved(_member);
-    }
-
-    /**
-     * @dev Create a new proposal
-     */
-    function createProposal(
-        string memory _description,
-        uint256 _amount,
-        address payable _recipient
-    ) external onlyMember returns (uint256) {
-        uint256 proposalId = nextProposalId++;
-        
-        Proposal storage newProposal = proposals[proposalId];
-        newProposal.id = proposalId;
-        newProposal.proposer = msg.sender;
-        newProposal.description = _description;
-        newProposal.amount = _amount;
-        newProposal.recipient = _recipient;
-        newProposal.startTime = block.timestamp;
-        newProposal.endTime = block.timestamp + VOTING_PERIOD;
-        newProposal.exists = true;
-
-        emit ProposalCreated(proposalId, msg.sender, _description);
+        emit ProposalCreated(proposalId, msg.sender, title, startTime, endTime);
         return proposalId;
     }
-
+    
     /**
-     * @dev Vote on a proposal
+     * @dev Cast a vote on a proposal
+     * @param proposalId Proposal ID to vote on
+     * @param voteType Vote type (0=Against, 1=For, 2=Abstain)
      */
-    function vote(uint256 _proposalId, bool _support) 
-        external 
-        onlyMember 
-        proposalExists(_proposalId) 
-    {
-        Proposal storage proposal = proposals[_proposalId];
+    function castVote(uint256 proposalId, VoteType voteType) external {
+        Proposal storage proposal = proposals[proposalId];
         
-        if (block.timestamp > proposal.endTime) revert VotingEnded();
-        if (proposal.hasVoted[msg.sender]) revert AlreadyVoted();
-
-        proposal.hasVoted[msg.sender] = true;
-        proposal.voteChoice[msg.sender] = _support;
+        require(proposal.proposer != address(0), "Proposal does not exist");
+        require(block.timestamp >= proposal.startTime, "Voting not started");
+        require(block.timestamp <= proposal.endTime, "Voting ended");
+        require(membershipTimestamp[msg.sender] != 0, "Must be a DAO member");
         
-        uint256 votingPower = members[msg.sender].votingPower;
+        Vote storage vote = votes[proposalId][msg.sender];
+        if (vote.hasVoted) revert AlreadyVoted();
         
-        if (_support) {
-            proposal.votesFor += votingPower;
+        uint256 weight = governanceToken.balanceOf(msg.sender);
+        require(weight > 0, "No voting power");
+        
+        vote.hasVoted = true;
+        vote.voteType = voteType;
+        vote.weight = weight;
+        vote.timestamp = block.timestamp;
+        
+        if (voteType == VoteType.For) {
+            proposal.votesFor += weight;
+        } else if (voteType == VoteType.Against) {
+            proposal.votesAgainst += weight;
         } else {
-            proposal.votesAgainst += votingPower;
+            proposal.votesAbstain += weight;
         }
-
-        emit VoteCast(_proposalId, msg.sender, _support, votingPower);
+        
+        emit VoteCast(proposalId, msg.sender, voteType, weight);
     }
-
+    
     /**
-     * @dev Execute a proposal after voting period ends
+     * @dev Execute a successful proposal
+     * @param proposalId Proposal ID to execute
      */
-    function executeProposal(uint256 _proposalId) 
-        external 
-        proposalExists(_proposalId) 
-    {
-        Proposal storage proposal = proposals[_proposalId];
+    function executeProposal(uint256 proposalId) external nonReentrant {
+        Proposal storage proposal = proposals[proposalId];
         
-        if (block.timestamp <= proposal.endTime) revert VotingNotEnded();
-        if (proposal.executed) revert AlreadyExecuted();
-
-        // Calculate total votes and check quorum
-        uint256 totalVotes = proposal.votesFor + proposal.votesAgainst;
-        uint256 totalVotingPower = getTotalVotingPower();
+        require(proposal.proposer != address(0), "Proposal does not exist");
+        require(!proposal.executed, "Already executed");
+        require(!proposal.canceled, "Proposal canceled");
+        require(block.timestamp > proposal.endTime, "Voting still active");
         
-        if (totalVotes * 100 < totalVotingPower * quorum) revert QuorumNotMet();
-        if (proposal.votesFor <= proposal.votesAgainst) revert ProposalFailed();
-
+        // Check if proposal succeeded
+        uint256 totalVotes = proposal.votesFor + proposal.votesAgainst + proposal.votesAbstain;
+        uint256 totalSupply = governanceToken.totalSupply();
+        uint256 quorumRequired = (totalSupply * quorumThreshold) / 100;
+        
+        require(totalVotes >= quorumRequired, "Quorum not reached");
+        
+        uint256 passingVotes = (totalVotes * passingThreshold) / 100;
+        require(proposal.votesFor > passingVotes, "Proposal defeated");
+        
         proposal.executed = true;
-
-        bool success = true;
-        // Execute the proposal (transfer funds if specified)
-        if (proposal.amount > 0 && proposal.recipient != address(0)) {
-            if (address(this).balance >= proposal.amount) {
-                (bool sent, ) = proposal.recipient.call{value: proposal.amount}("");
-                if (!sent) success = false;
-            } else {
-                success = false;
+        proposal.state = ProposalState.Executed;
+        
+        // Execute the proposal
+        if (proposal.target == address(0)) {
+            // Treasury operation
+            if (proposal.value > 0) {
+                require(treasuryBalance >= proposal.value, "Insufficient treasury funds");
+                treasuryBalance -= proposal.value;
+                
+                // Decode recipient from data
+                address recipient = abi.decode(proposal.data, (address));
+                payable(recipient).transfer(proposal.value);
+                emit FundsWithdrawn(recipient, proposal.value);
             }
+        } else {
+            // External contract call
+            (bool success, ) = proposal.target.call{value: proposal.value}(proposal.data);
+            if (!success) revert ExecutionFailed();
         }
-
-        emit ProposalExecuted(_proposalId, success);
+        
+        emit ProposalExecuted(proposalId);
     }
-
+    
+    /**
+     * @dev Cancel a proposal (only proposer or owner can cancel)
+     * @param proposalId Proposal ID to cancel
+     */
+    function cancelProposal(uint256 proposalId) external {
+        Proposal storage proposal = proposals[proposalId];
+        
+        require(proposal.proposer != address(0), "Proposal does not exist");
+        require(!proposal.executed, "Already executed");
+        require(!proposal.canceled, "Already canceled");
+        require(
+            msg.sender == proposal.proposer || msg.sender == owner(),
+            "Not authorized to cancel"
+        );
+        
+        proposal.canceled = true;
+        proposal.state = ProposalState.Canceled;
+        
+        emit ProposalCanceled(proposalId);
+    }
+    
+    /**
+     * @dev Deposit funds to treasury
+     */
+    function depositToTreasury() external payable {
+        require(msg.value > 0, "Must send ETH");
+        treasuryBalance += msg.value;
+        emit FundsDeposited(msg.sender, msg.value);
+    }
+    
+    /**
+     * @dev Create a treasury withdrawal proposal
+     * @param recipient Address to send funds to
+     * @param amount Amount to withdraw
+     * @param title Proposal title
+     * @param description Proposal description
+     */
+    function createTreasuryWithdrawalProposal(
+        address recipient,
+        uint256 amount,
+        string memory title,
+        string memory description
+    ) external returns (uint256) {
+        require(amount <= treasuryBalance, "Amount exceeds treasury balance");
+        require(recipient != address(0), "Invalid recipient");
+        
+        bytes memory data = abi.encode(recipient);
+        return createProposal(title, description, address(0), amount, data);
+    }
+    
+    // View functions
+    
     /**
      * @dev Get proposal details
+     * @param proposalId Proposal ID
+     * @return Proposal struct
      */
-    function getProposal(uint256 _proposalId) external view returns (
-        uint256 id,
-        address proposer,
-        string memory description,
-        uint256 amount,
-        address recipient,
+    function getProposal(uint256 proposalId) external view returns (Proposal memory) {
+        return proposals[proposalId];
+    }
+    
+    /**
+     * @dev Get current proposal state
+     * @param proposalId Proposal ID
+     * @return ProposalState Current state
+     */
+    function getProposalState(uint256 proposalId) external view returns (ProposalState) {
+        Proposal storage proposal = proposals[proposalId];
+        
+        if (proposal.canceled) return ProposalState.Canceled;
+        if (proposal.executed) return ProposalState.Executed;
+        if (block.timestamp < proposal.startTime) return ProposalState.Pending;
+        if (block.timestamp <= proposal.endTime) return ProposalState.Active;
+        
+        // Check if succeeded
+        uint256 totalVotes = proposal.votesFor + proposal.votesAgainst + proposal.votesAbstain;
+        uint256 totalSupply = governanceToken.totalSupply();
+        uint256 quorumRequired = (totalSupply * quorumThreshold) / 100;
+        
+        if (totalVotes < quorumRequired) return ProposalState.Defeated;
+        
+        uint256 passingVotes = (totalVotes * passingThreshold) / 100;
+        if (proposal.votesFor > passingVotes) return ProposalState.Succeeded;
+        
+        return ProposalState.Defeated;
+    }
+    
+    /**
+     * @dev Get vote details for a user on a proposal
+     * @param proposalId Proposal ID
+     * @param voter Voter address
+     * @return Vote struct
+     */
+    function getVote(uint256 proposalId, address voter) external view returns (Vote memory) {
+        return votes[proposalId][voter];
+    }
+    
+    /**
+     * @dev Get voting power of an address
+     * @param account Address to check
+     * @return uint256 Voting power (token balance)
+     */
+    function getVotingPower(address account) external view returns (uint256) {
+        return governanceToken.balanceOf(account);
+    }
+    
+    /**
+     * @dev Check if address is a DAO member
+     * @param account Address to check
+     * @return bool True if member
+     */
+    function isMember(address account) external view returns (bool) {
+        return membershipTimestamp[account] != 0;
+    }
+    
+    /**
+     * @dev Get proposal voting results
+     * @param proposalId Proposal ID
+     * @return votesFor Votes in favor
+     * @return votesAgainst Votes against
+     * @return votesAbstain Abstain votes
+     * @return totalVotes Total votes cast
+     */
+    function getVotingResults(uint256 proposalId) external view returns (
         uint256 votesFor,
         uint256 votesAgainst,
-        uint256 startTime,
-        uint256 endTime,
-        bool executed,
-        bool isActive
+        uint256 votesAbstain,
+        uint256 totalVotes
     ) {
-        Proposal storage proposal = proposals[_proposalId];
+        Proposal storage proposal = proposals[proposalId];
+        votesFor = proposal.votesFor;
+        votesAgainst = proposal.votesAgainst;
+        votesAbstain = proposal.votesAbstain;
+        totalVotes = votesFor + votesAgainst + votesAbstain;
+    }
+    
+    /**
+     * @dev Get DAO settings
+     * @return All governance parameters
+     */
+    function getDAOSettings() external view returns (
+        uint256 _votingDelay,
+        uint256 _votingPeriod,
+        uint256 _proposalThreshold,
+        uint256 _quorumThreshold,
+        uint256 _passingThreshold,
+        uint256 _treasuryBalance
+    ) {
         return (
-            proposal.id,
-            proposal.proposer,
-            proposal.description,
-            proposal.amount,
-            proposal.recipient,
-            proposal.votesFor,
-            proposal.votesAgainst,
-            proposal.startTime,
-            proposal.endTime,
-            proposal.executed,
-            block.timestamp <= proposal.endTime && !proposal.executed
+            votingDelay,
+            votingPeriod,
+            proposalThreshold,
+            quorumThreshold,
+            passingThreshold,
+            treasuryBalance
         );
     }
-
+    
+    // Owner functions for governance parameter updates
+    
     /**
-     * @dev Check if an address has voted on a proposal
+     * @dev Update voting delay
+     * @param newDelay New voting delay in seconds
      */
-    function hasVoted(uint256 _proposalId, address _voter) 
-        external 
-        view 
-        returns (bool voted, bool choice) 
-    {
-        return (
-            proposals[_proposalId].hasVoted[_voter],
-            proposals[_proposalId].voteChoice[_voter]
-        );
+    function setVotingDelay(uint256 newDelay) external onlyOwner {
+        require(newDelay <= 30 days, "Delay too long");
+        votingDelay = newDelay;
     }
-
+    
     /**
-     * @dev Get total voting power of all members
+     * @dev Update voting period
+     * @param newPeriod New voting period in seconds
      */
-    function getTotalVotingPower() public view returns (uint256) {
-        // In a real implementation, you'd want to track this more efficiently
-        // For simplicity, this assumes each member has equal voting power
-        // You could extend this to sum up all members' voting power
-        uint256 total = 0;
-        // Note: This is a simplified version. In practice, you'd need to iterate
-        // through all members or maintain a running total
-        return memberCount; // Simplified - assumes each member has 1 vote
+    function setVotingPeriod(uint256 newPeriod) external onlyOwner {
+        require(newPeriod >= 1 days && newPeriod <= 30 days, "Invalid period");
+        votingPeriod = newPeriod;
     }
-
+    
     /**
-     * @dev Set quorum percentage (only admin)
+     * @dev Update proposal threshold
+     * @param newThreshold New proposal threshold in tokens
      */
-    function setQuorum(uint256 _quorum) external onlyAdmin {
-        require(_quorum > 0 && _quorum <= 100, "Invalid quorum percentage");
-        quorum = _quorum;
+    function setProposalThreshold(uint256 newThreshold) external onlyOwner {
+        proposalThreshold = newThreshold;
     }
-
+    
     /**
-     * @dev Allow the DAO to receive ETH
+     * @dev Update quorum threshold
+     * @param newThreshold New quorum threshold percentage (1-100)
      */
-    receive() external payable {}
-
-    /**
-     * @dev Get contract balance
-     */
-    function getBalance() external view returns (uint256) {
-        return address(this).balance;
+    function setQuorumThreshold(uint256 newThreshold) external onlyOwner {
+        require(newThreshold > 0 && newThreshold <= 100, "Invalid threshold");
+        quorumThreshold = newThreshold;
     }
-
+    
     /**
-     * @dev Emergency withdraw (only admin) - for initial setup phase
+     * @dev Update passing threshold
+     * @param newThreshold New passing threshold percentage (1-100)
      */
-    function emergencyWithdraw() external onlyAdmin {
-        (bool success, ) = payable(admin).call{value: address(this).balance}("");
-        if (!success) revert TransferFailed();
+    function setPassingThreshold(uint256 newThreshold) external onlyOwner {
+        require(newThreshold > 0 && newThreshold <= 100, "Invalid threshold");
+        passingThreshold = newThreshold;
     }
->>>>>>> 09f664425c361769e7b68bd244e735d37996867c
+    
+    /**
+     * @dev Get total number of proposals
+     * @return uint256 Total proposal count
+     */
+    function getTotalProposals() external view returns (uint256) {
+        return proposalCounter;
+    }
+    
+    /**
+     * @dev Receive function to accept ETH deposits
+     */
+    receive() external payable {
+        treasuryBalance += msg.value;
+        emit FundsDeposited(msg.sender, msg.value);
+    }
 }

@@ -2,7 +2,7 @@ pragma solidity ^0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol"; // v5.x path
 
 /**
  * @title TokenGatedPage
@@ -34,7 +34,7 @@ contract TokenGatedPage is Ownable, ReentrancyGuard {
     error InvalidTokenAddress();
     
     /**
-     * @dev Constructor
+     * @dev Constructor (v5.x style)
      * @param _gatingToken Address of the ERC20 token used for gating
      * @param _minimumBalance Minimum token balance required for access
      */

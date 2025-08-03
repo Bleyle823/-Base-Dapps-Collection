@@ -3,12 +3,12 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 
 /**
- * Deploys a contract named "YourContract" using the deployer account and
- * constructor arguments set to the deployer address
+ * Deploys a contract named "TokenGatedPage" using the deployer account and
+ * constructor arguments set to a token address and minimum balance
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployTokenGatedPage: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
@@ -22,10 +22,15 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("YourContract", {
+  // For testing purposes, we'll use a placeholder token address
+  // In production, you would use the actual ERC20 token address
+  const gatingTokenAddress = "0x0000000000000000000000000000000000000000"; // Replace with actual token address
+  const minimumTokenBalance = hre.ethers.parseEther("1"); // 1 token minimum balance
+
+  await deploy("TokenGatedPage", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer],
+    args: [gatingTokenAddress, minimumTokenBalance],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -33,12 +38,13 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const yourContract = await hre.ethers.getContract<Contract>("YourContract", deployer);
-  console.log("👋 Initial greeting:", await yourContract.greeting());
+  const tokenGatedPage = await hre.ethers.getContract<Contract>("TokenGatedPage", deployer);
+  console.log("🎫 TokenGatedPage deployed successfully!");
+  console.log("📋 Contract info:", await tokenGatedPage.getContractInfo());
 };
 
-export default deployYourContract;
+export default deployTokenGatedPage;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
-// e.g. yarn deploy --tags YourContract
-deployYourContract.tags = ["YourContract"];
+// e.g. yarn deploy --tags TokenGatedPage
+deployTokenGatedPage.tags = ["TokenGatedPage"];

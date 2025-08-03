@@ -1,0 +1,1087 @@
+{
+  "address": "0xe2fcD718EaFDb5FE14Bea19D6B395b365c4CC7c6",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "GameExpired",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "GameNotInCommitPhase",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "GameNotInRevealPhase",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "GameNotOpen",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidBetAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidChoice",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidCommitment",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotGamePlayer",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PlayerAlreadyInGame",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PrizeAlreadyClaimed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "RevealTimeoutNotReached",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TransferFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UnauthorizedAccess",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "player",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "choice",
+          "type": "uint8"
+        }
+      ],
+      "name": "ChoiceRevealed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "player",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "commitment",
+          "type": "bytes32"
+        }
+      ],
+      "name": "CommitmentMade",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "player1",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "betAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        }
+      ],
+      "name": "GameCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "winner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "player1Choice",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "player2Choice",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "prize",
+          "type": "uint256"
+        }
+      ],
+      "name": "GameFinished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "player2",
+          "type": "address"
+        }
+      ],
+      "name": "PlayerJoined",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "winner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "PrizeClaimed",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_BET",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MIN_BET",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "REVEAL_TIMEOUT",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_gameId",
+          "type": "uint256"
+        }
+      ],
+      "name": "claimTimeoutPrize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_commitment",
+          "type": "bytes32"
+        }
+      ],
+      "name": "createGame",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "gameId",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "games",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "player1",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "player2",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "betAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "player1Commitment",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "player2Commitment",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "player1Choice",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "player2Choice",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.GameState",
+          "name": "state",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "winner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "createdAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "prizeClaimed",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "_choice",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_nonce",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_player",
+          "type": "address"
+        }
+      ],
+      "name": "generateCommitment",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_gameId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getGame",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "player1",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "player2",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "betAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum RockPaperScissors.GameState",
+          "name": "state",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "player1Choice",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "player2Choice",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "winner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deadline",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "prizeClaimed",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_start",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_limit",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOpenGames",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "openGames",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPlatformStats",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "_totalGames",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_totalVolume",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_platformFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_platformBalance",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_player",
+          "type": "address"
+        }
+      ],
+      "name": "getPlayerGames",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_player",
+          "type": "address"
+        }
+      ],
+      "name": "getPlayerStats",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "wins",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_gameId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "_commitment",
+          "type": "bytes32"
+        }
+      ],
+      "name": "joinGame",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "nextGameId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "platformBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "platformFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "platformOwner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "playerGames",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "playerStats",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_gameId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum RockPaperScissors.Choice",
+          "name": "_choice",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_nonce",
+          "type": "uint256"
+        }
+      ],
+      "name": "revealChoice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalGames",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalVolume",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_newFee",
+          "type": "uint256"
+        }
+      ],
+      "name": "updatePlatformFee",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawPlatformFees",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x0eec3a70d3f1b6ae8bb3abdce4586c1514b358f8a68d14bbf0b6e9c1f927b3b2",
+  "receipt": {
+    "to": null,
+    "from": "0x231CdF6d31BF1D106DFA88b702B00E4b900628AD",
+    "contractAddress": "0xe2fcD718EaFDb5FE14Bea19D6B395b365c4CC7c6",
+    "transactionIndex": 20,
+    "gasUsed": "2032161",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x1c2b5e7f5edd15f68c4f6863eb6d5589a3afb315ffc10306aecffc08b1a45c4f",
+    "transactionHash": "0x0eec3a70d3f1b6ae8bb3abdce4586c1514b358f8a68d14bbf0b6e9c1f927b3b2",
+    "logs": [],
+    "blockNumber": 33641722,
+    "cumulativeGasUsed": "4819103",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "14aa4abc919998bb8ca28f5aae8f362e",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"GameExpired\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"GameNotInCommitPhase\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"GameNotInRevealPhase\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"GameNotOpen\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidBetAmount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidChoice\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"InvalidCommitment\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"NotGamePlayer\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PlayerAlreadyInGame\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PrizeAlreadyClaimed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"RevealTimeoutNotReached\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"TransferFailed\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnauthorizedAccess\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"gameId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"player\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"choice\",\"type\":\"uint8\"}],\"name\":\"ChoiceRevealed\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"gameId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"player\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bytes32\",\"name\":\"commitment\",\"type\":\"bytes32\"}],\"name\":\"CommitmentMade\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"gameId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"player1\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"betAmount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"}],\"name\":\"GameCreated\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"gameId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"winner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"player1Choice\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"player2Choice\",\"type\":\"uint8\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"prize\",\"type\":\"uint256\"}],\"name\":\"GameFinished\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"gameId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"player2\",\"type\":\"address\"}],\"name\":\"PlayerJoined\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"gameId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"winner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"PrizeClaimed\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"MAX_BET\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MIN_BET\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"REVEAL_TIMEOUT\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gameId\",\"type\":\"uint256\"}],\"name\":\"claimTimeoutPrize\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"createGame\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"gameId\",\"type\":\"uint256\"}],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"games\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"player1\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"player2\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"betAmount\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"player1Commitment\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"player2Commitment\",\"type\":\"bytes32\"},{\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"player1Choice\",\"type\":\"uint8\"},{\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"player2Choice\",\"type\":\"uint8\"},{\"internalType\":\"enum RockPaperScissors.GameState\",\"name\":\"state\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"winner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"createdAt\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"prizeClaimed\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"_choice\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_nonce\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_player\",\"type\":\"address\"}],\"name\":\"generateCommitment\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gameId\",\"type\":\"uint256\"}],\"name\":\"getGame\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"player1\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"player2\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"betAmount\",\"type\":\"uint256\"},{\"internalType\":\"enum RockPaperScissors.GameState\",\"name\":\"state\",\"type\":\"uint8\"},{\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"player1Choice\",\"type\":\"uint8\"},{\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"player2Choice\",\"type\":\"uint8\"},{\"internalType\":\"address\",\"name\":\"winner\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"deadline\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"prizeClaimed\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_start\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_limit\",\"type\":\"uint256\"}],\"name\":\"getOpenGames\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"openGames\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPlatformStats\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"_totalGames\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_totalVolume\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_platformFee\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_platformBalance\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_player\",\"type\":\"address\"}],\"name\":\"getPlayerGames\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_player\",\"type\":\"address\"}],\"name\":\"getPlayerStats\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"wins\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gameId\",\"type\":\"uint256\"},{\"internalType\":\"bytes32\",\"name\":\"_commitment\",\"type\":\"bytes32\"}],\"name\":\"joinGame\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextGameId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"platformBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"platformFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"platformOwner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"playerGames\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"playerStats\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_gameId\",\"type\":\"uint256\"},{\"internalType\":\"enum RockPaperScissors.Choice\",\"name\":\"_choice\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"_nonce\",\"type\":\"uint256\"}],\"name\":\"revealChoice\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalGames\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"totalVolume\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_newFee\",\"type\":\"uint256\"}],\"name\":\"updatePlatformFee\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"withdrawPlatformFees\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"A provably fair Rock Paper Scissors game with betting and commitment-reveal scheme\",\"kind\":\"dev\",\"methods\":{\"claimTimeoutPrize(uint256)\":{\"details\":\"Claim prize for timeout (if opponent doesn't reveal in time)\",\"params\":{\"_gameId\":\"ID of the game\"}},\"createGame(bytes32)\":{\"details\":\"Create a new Rock Paper Scissors game\",\"params\":{\"_commitment\":\"Player 1's commitment (hash of choice + nonce)\"}},\"generateCommitment(uint8,uint256,address)\":{\"details\":\"Generate commitment hash for frontend\",\"params\":{\"_choice\":\"Player's choice\",\"_nonce\":\"Random nonce\",\"_player\":\"Player's address\"}},\"getGame(uint256)\":{\"details\":\"Get game details\"},\"getOpenGames(uint256,uint256)\":{\"details\":\"Get open games for joining\"},\"getPlatformStats()\":{\"details\":\"Get platform statistics\"},\"getPlayerGames(address)\":{\"details\":\"Get player's game history\"},\"getPlayerStats(address)\":{\"details\":\"Get player statistics\"},\"joinGame(uint256,bytes32)\":{\"details\":\"Join an existing game as player 2\",\"params\":{\"_commitment\":\"Player 2's commitment\",\"_gameId\":\"ID of the game to join\"}},\"revealChoice(uint256,uint8,uint256)\":{\"details\":\"Reveal player's choice\",\"params\":{\"_choice\":\"Player's actual choice\",\"_gameId\":\"ID of the game\",\"_nonce\":\"Nonce used in commitment\"}},\"transferOwnership(address)\":{\"details\":\"Transfer ownership\"},\"updatePlatformFee(uint256)\":{\"details\":\"Update platform fee (only owner)\"},\"withdrawPlatformFees()\":{\"details\":\"Withdraw platform fees\"}},\"title\":\"RockPaperScissors\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/RockPaperScissors.sol\":\"RockPaperScissors\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/RockPaperScissors.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\r\\npragma solidity ^0.8.19;\\r\\n\\r\\n/**\\r\\n * @title RockPaperScissors\\r\\n * @dev A provably fair Rock Paper Scissors game with betting and commitment-reveal scheme\\r\\n */\\r\\ncontract RockPaperScissors {\\r\\n    enum Choice { None, Rock, Paper, Scissors }\\r\\n    enum GameState { Open, Committed, Revealed, Finished }\\r\\n    \\r\\n    struct Game {\\r\\n        address player1;\\r\\n        address player2;\\r\\n        uint256 betAmount;\\r\\n        bytes32 player1Commitment;\\r\\n        bytes32 player2Commitment;\\r\\n        Choice player1Choice;\\r\\n        Choice player2Choice;\\r\\n        GameState state;\\r\\n        address winner;\\r\\n        uint256 createdAt;\\r\\n        uint256 deadline;\\r\\n        bool prizeClaimed;\\r\\n    }\\r\\n\\r\\n    // State variables\\r\\n    mapping(uint256 => Game) public games;\\r\\n    mapping(address => uint256[]) public playerGames;\\r\\n    mapping(address => uint256) public playerStats; // wins count\\r\\n    \\r\\n    uint256 public nextGameId;\\r\\n    uint256 public totalGames;\\r\\n    uint256 public totalVolume;\\r\\n    \\r\\n    // Platform fee (in basis points, 100 = 1%)\\r\\n    uint256 public platformFee = 200; // 2%\\r\\n    address public platformOwner;\\r\\n    uint256 public platformBalance;\\r\\n    \\r\\n    // Game settings\\r\\n    uint256 public constant REVEAL_TIMEOUT = 1 hours;\\r\\n    uint256 public constant MIN_BET = 0.001 ether;\\r\\n    uint256 public constant MAX_BET = 10 ether;\\r\\n\\r\\n    // Events\\r\\n    event GameCreated(\\r\\n        uint256 indexed gameId,\\r\\n        address indexed player1,\\r\\n        uint256 betAmount,\\r\\n        uint256 deadline\\r\\n    );\\r\\n    \\r\\n    event PlayerJoined(\\r\\n        uint256 indexed gameId,\\r\\n        address indexed player2\\r\\n    );\\r\\n    \\r\\n    event CommitmentMade(\\r\\n        uint256 indexed gameId,\\r\\n        address indexed player,\\r\\n        bytes32 commitment\\r\\n    );\\r\\n    \\r\\n    event ChoiceRevealed(\\r\\n        uint256 indexed gameId,\\r\\n        address indexed player,\\r\\n        Choice choice\\r\\n    );\\r\\n    \\r\\n    event GameFinished(\\r\\n        uint256 indexed gameId,\\r\\n        address indexed winner,\\r\\n        Choice player1Choice,\\r\\n        Choice player2Choice,\\r\\n        uint256 prize\\r\\n    );\\r\\n    \\r\\n    event PrizeClaimed(\\r\\n        uint256 indexed gameId,\\r\\n        address indexed winner,\\r\\n        uint256 amount\\r\\n    );\\r\\n\\r\\n    // Errors\\r\\n    error InvalidBetAmount();\\r\\n    error GameNotOpen();\\r\\n    error GameNotInCommitPhase();\\r\\n    error GameNotInRevealPhase();\\r\\n    error PlayerAlreadyInGame();\\r\\n    error NotGamePlayer();\\r\\n    error InvalidChoice();\\r\\n    error InvalidCommitment();\\r\\n    error RevealTimeoutNotReached();\\r\\n    error PrizeAlreadyClaimed();\\r\\n    error TransferFailed();\\r\\n    error GameExpired();\\r\\n    error UnauthorizedAccess();\\r\\n\\r\\n    // Modifiers\\r\\n    modifier onlyPlatformOwner() {\\r\\n        require(msg.sender == platformOwner, \\\"Only platform owner\\\");\\r\\n        _;\\r\\n    }\\r\\n\\r\\n    modifier gameExists(uint256 _gameId) {\\r\\n        require(_gameId < nextGameId, \\\"Game does not exist\\\");\\r\\n        _;\\r\\n    }\\r\\n\\r\\n    modifier onlyGamePlayer(uint256 _gameId) {\\r\\n        Game memory game = games[_gameId];\\r\\n        require(msg.sender == game.player1 || msg.sender == game.player2, \\\"Not a game player\\\");\\r\\n        _;\\r\\n    }\\r\\n\\r\\n    constructor() {\\r\\n        platformOwner = msg.sender;\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Create a new Rock Paper Scissors game\\r\\n     * @param _commitment Player 1's commitment (hash of choice + nonce)\\r\\n     */\\r\\n    function createGame(bytes32 _commitment) external payable returns (uint256 gameId) {\\r\\n        if (msg.value < MIN_BET || msg.value > MAX_BET) revert InvalidBetAmount();\\r\\n        require(_commitment != bytes32(0), \\\"Invalid commitment\\\");\\r\\n\\r\\n        gameId = nextGameId++;\\r\\n        \\r\\n        games[gameId] = Game({\\r\\n            player1: msg.sender,\\r\\n            player2: address(0),\\r\\n            betAmount: msg.value,\\r\\n            player1Commitment: _commitment,\\r\\n            player2Commitment: bytes32(0),\\r\\n            player1Choice: Choice.None,\\r\\n            player2Choice: Choice.None,\\r\\n            state: GameState.Open,\\r\\n            winner: address(0),\\r\\n            createdAt: block.timestamp,\\r\\n            deadline: block.timestamp + REVEAL_TIMEOUT,\\r\\n            prizeClaimed: false\\r\\n        });\\r\\n\\r\\n        playerGames[msg.sender].push(gameId);\\r\\n        totalGames++;\\r\\n\\r\\n        emit GameCreated(gameId, msg.sender, msg.value, games[gameId].deadline);\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Join an existing game as player 2\\r\\n     * @param _gameId ID of the game to join\\r\\n     * @param _commitment Player 2's commitment\\r\\n     */\\r\\n    function joinGame(uint256 _gameId, bytes32 _commitment) \\r\\n        external \\r\\n        payable \\r\\n        gameExists(_gameId) \\r\\n    {\\r\\n        Game storage game = games[_gameId];\\r\\n        \\r\\n        if (game.state != GameState.Open) revert GameNotOpen();\\r\\n        require(msg.sender != game.player1, \\\"Cannot play against yourself\\\");\\r\\n        require(msg.value == game.betAmount, \\\"Must match bet amount\\\");\\r\\n        require(_commitment != bytes32(0), \\\"Invalid commitment\\\");\\r\\n\\r\\n        game.player2 = msg.sender;\\r\\n        game.player2Commitment = _commitment;\\r\\n        game.state = GameState.Committed;\\r\\n        game.deadline = block.timestamp + REVEAL_TIMEOUT;\\r\\n\\r\\n        playerGames[msg.sender].push(_gameId);\\r\\n        totalVolume += msg.value * 2;\\r\\n\\r\\n        emit PlayerJoined(_gameId, msg.sender);\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Reveal player's choice\\r\\n     * @param _gameId ID of the game\\r\\n     * @param _choice Player's actual choice\\r\\n     * @param _nonce Nonce used in commitment\\r\\n     */\\r\\n    function revealChoice(uint256 _gameId, Choice _choice, uint256 _nonce) \\r\\n        external \\r\\n        gameExists(_gameId)\\r\\n        onlyGamePlayer(_gameId)\\r\\n    {\\r\\n        Game storage game = games[_gameId];\\r\\n        \\r\\n        if (game.state != GameState.Committed && game.state != GameState.Revealed) {\\r\\n            revert GameNotInRevealPhase();\\r\\n        }\\r\\n        \\r\\n        if (_choice == Choice.None || _choice > Choice.Scissors) revert InvalidChoice();\\r\\n\\r\\n        bytes32 commitment = keccak256(abi.encodePacked(_choice, _nonce, msg.sender));\\r\\n        \\r\\n        if (msg.sender == game.player1) {\\r\\n            if (commitment != game.player1Commitment) revert InvalidCommitment();\\r\\n            require(game.player1Choice == Choice.None, \\\"Already revealed\\\");\\r\\n            game.player1Choice = _choice;\\r\\n        } else {\\r\\n            if (commitment != game.player2Commitment) revert InvalidCommitment();\\r\\n            require(game.player2Choice == Choice.None, \\\"Already revealed\\\");\\r\\n            game.player2Choice = _choice;\\r\\n        }\\r\\n\\r\\n        emit ChoiceRevealed(_gameId, msg.sender, _choice);\\r\\n\\r\\n        // Check if both players have revealed\\r\\n        if (game.player1Choice != Choice.None && game.player2Choice != Choice.None) {\\r\\n            _finishGame(_gameId);\\r\\n        } else if (game.state == GameState.Committed) {\\r\\n            game.state = GameState.Revealed;\\r\\n        }\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Claim prize for timeout (if opponent doesn't reveal in time)\\r\\n     * @param _gameId ID of the game\\r\\n     */\\r\\n    function claimTimeoutPrize(uint256 _gameId) \\r\\n        external \\r\\n        gameExists(_gameId)\\r\\n        onlyGamePlayer(_gameId)\\r\\n    {\\r\\n        Game storage game = games[_gameId];\\r\\n        \\r\\n        require(block.timestamp > game.deadline, \\\"Timeout not reached\\\");\\r\\n        require(game.state == GameState.Revealed, \\\"Game not in reveal phase\\\");\\r\\n        require(!game.prizeClaimed, \\\"Prize already claimed\\\");\\r\\n\\r\\n        // Determine winner based on who revealed\\r\\n        address winner;\\r\\n        if (game.player1Choice != Choice.None && game.player2Choice == Choice.None) {\\r\\n            winner = game.player1;\\r\\n        } else if (game.player2Choice != Choice.None && game.player1Choice == Choice.None) {\\r\\n            winner = game.player2;\\r\\n        } else {\\r\\n            revert(\\\"Invalid timeout claim\\\");\\r\\n        }\\r\\n\\r\\n        require(msg.sender == winner, \\\"Only winner can claim\\\");\\r\\n\\r\\n        game.winner = winner;\\r\\n        game.state = GameState.Finished;\\r\\n        game.prizeClaimed = true;\\r\\n\\r\\n        uint256 totalPot = game.betAmount * 2;\\r\\n        uint256 fee = (totalPot * platformFee) / 10000;\\r\\n        uint256 prize = totalPot - fee;\\r\\n\\r\\n        platformBalance += fee;\\r\\n        playerStats[winner]++;\\r\\n\\r\\n        (bool success, ) = payable(winner).call{value: prize}(\\\"\\\");\\r\\n        if (!success) revert TransferFailed();\\r\\n\\r\\n        emit PrizeClaimed(_gameId, winner, prize);\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Internal function to finish game and determine winner\\r\\n     */\\r\\n    function _finishGame(uint256 _gameId) internal {\\r\\n        Game storage game = games[_gameId];\\r\\n        \\r\\n        address winner = _determineWinner(game.player1Choice, game.player2Choice);\\r\\n        \\r\\n        game.winner = winner;\\r\\n        game.state = GameState.Finished;\\r\\n        \\r\\n        uint256 totalPot = game.betAmount * 2;\\r\\n        uint256 fee = (totalPot * platformFee) / 10000;\\r\\n        uint256 prize = totalPot - fee;\\r\\n        \\r\\n        platformBalance += fee;\\r\\n\\r\\n        if (winner != address(0)) {\\r\\n            playerStats[winner]++;\\r\\n            (bool success, ) = payable(winner).call{value: prize}(\\\"\\\");\\r\\n            if (!success) revert TransferFailed();\\r\\n        } else {\\r\\n            // Tie - refund both players minus platform fee\\r\\n            uint256 refundAmount = (prize / 2);\\r\\n            \\r\\n            (bool success1, ) = payable(game.player1).call{value: refundAmount}(\\\"\\\");\\r\\n            (bool success2, ) = payable(game.player2).call{value: refundAmount}(\\\"\\\");\\r\\n            \\r\\n            if (!success1 || !success2) revert TransferFailed();\\r\\n        }\\r\\n        \\r\\n        game.prizeClaimed = true;\\r\\n\\r\\n        emit GameFinished(\\r\\n            _gameId, \\r\\n            winner, \\r\\n            game.player1Choice, \\r\\n            game.player2Choice, \\r\\n            prize\\r\\n        );\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Determine winner based on choices\\r\\n     * @param _choice1 Player 1's choice\\r\\n     * @param _choice2 Player 2's choice\\r\\n     * @return winner Address of winner, or address(0) for tie\\r\\n     */\\r\\n    function _determineWinner(Choice _choice1, Choice _choice2) \\r\\n        internal \\r\\n        view\\r\\n        returns (address winner) \\r\\n    {\\r\\n        if (_choice1 == _choice2) {\\r\\n            return address(0); // Tie\\r\\n        }\\r\\n        \\r\\n        Game storage game = games[0]; // Just to get player addresses\\r\\n        \\r\\n        if ((_choice1 == Choice.Rock && _choice2 == Choice.Scissors) ||\\r\\n            (_choice1 == Choice.Paper && _choice2 == Choice.Rock) ||\\r\\n            (_choice1 == Choice.Scissors && _choice2 == Choice.Paper)) {\\r\\n            return game.player1;\\r\\n        } else {\\r\\n            return game.player2;\\r\\n        }\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Get game details\\r\\n     */\\r\\n    function getGame(uint256 _gameId) \\r\\n        external \\r\\n        view \\r\\n        gameExists(_gameId)\\r\\n        returns (\\r\\n            address player1,\\r\\n            address player2,\\r\\n            uint256 betAmount,\\r\\n            GameState state,\\r\\n            Choice player1Choice,\\r\\n            Choice player2Choice,\\r\\n            address winner,\\r\\n            uint256 deadline,\\r\\n            bool prizeClaimed\\r\\n        ) \\r\\n    {\\r\\n        Game memory game = games[_gameId];\\r\\n        return (\\r\\n            game.player1,\\r\\n            game.player2,\\r\\n            game.betAmount,\\r\\n            game.state,\\r\\n            game.player1Choice,\\r\\n            game.player2Choice,\\r\\n            game.winner,\\r\\n            game.deadline,\\r\\n            game.prizeClaimed\\r\\n        );\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Get player's game history\\r\\n     */\\r\\n    function getPlayerGames(address _player) \\r\\n        external \\r\\n        view \\r\\n        returns (uint256[] memory) \\r\\n    {\\r\\n        return playerGames[_player];\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Get open games for joining\\r\\n     */\\r\\n    function getOpenGames(uint256 _start, uint256 _limit) \\r\\n        external \\r\\n        view \\r\\n        returns (uint256[] memory openGames) \\r\\n    {\\r\\n        uint256[] memory temp = new uint256[](nextGameId);\\r\\n        uint256 count = 0;\\r\\n        \\r\\n        for (uint256 i = _start; i < nextGameId && count < _limit; i++) {\\r\\n            if (games[i].state == GameState.Open) {\\r\\n                temp[count] = i;\\r\\n                count++;\\r\\n            }\\r\\n        }\\r\\n        \\r\\n        openGames = new uint256[](count);\\r\\n        for (uint256 i = 0; i < count; i++) {\\r\\n            openGames[i] = temp[i];\\r\\n        }\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Generate commitment hash for frontend\\r\\n     * @param _choice Player's choice\\r\\n     * @param _nonce Random nonce\\r\\n     * @param _player Player's address\\r\\n     */\\r\\n    function generateCommitment(Choice _choice, uint256 _nonce, address _player) \\r\\n        external \\r\\n        pure \\r\\n        returns (bytes32) \\r\\n    {\\r\\n        return keccak256(abi.encodePacked(_choice, _nonce, _player));\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Update platform fee (only owner)\\r\\n     */\\r\\n    function updatePlatformFee(uint256 _newFee) external onlyPlatformOwner {\\r\\n        require(_newFee <= 1000, \\\"Fee too high\\\"); // Max 10%\\r\\n        platformFee = _newFee;\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Withdraw platform fees\\r\\n     */\\r\\n    function withdrawPlatformFees() external onlyPlatformOwner {\\r\\n        uint256 amount = platformBalance;\\r\\n        platformBalance = 0;\\r\\n        \\r\\n        (bool success, ) = payable(platformOwner).call{value: amount}(\\\"\\\");\\r\\n        if (!success) revert TransferFailed();\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Get platform statistics\\r\\n     */\\r\\n    function getPlatformStats() external view returns (\\r\\n        uint256 _totalGames,\\r\\n        uint256 _totalVolume,\\r\\n        uint256 _platformFee,\\r\\n        uint256 _platformBalance\\r\\n    ) {\\r\\n        return (totalGames, totalVolume, platformFee, platformBalance);\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Get player statistics\\r\\n     */\\r\\n    function getPlayerStats(address _player) external view returns (uint256 wins) {\\r\\n        return playerStats[_player];\\r\\n    }\\r\\n\\r\\n    /**\\r\\n     * @dev Transfer ownership\\r\\n     */\\r\\n    function transferOwnership(address _newOwner) external onlyPlatformOwner {\\r\\n        require(_newOwner != address(0), \\\"Invalid address\\\");\\r\\n        platformOwner = _newOwner;\\r\\n    }\\r\\n}\",\"keccak256\":\"0x87ac30b25be7e8583ad1a5c943f7411c7404654ce961214740bd98629f40da9c\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405260c860065534801561001557600080fd5b50600780546001600160a01b031916331790556122fd806100376000396000f3fe6080604052600436106101665760003560e01c80636540742f116100d1578063aa0b59881161008a578063cdafbbb611610064578063cdafbbb6146104b6578063d0b7830b146104e3578063de92285f146104f8578063f2fde38b1461051857600080fd5b8063aa0b59881461046d578063ac9526711461048d578063b135bbb0146104a057600080fd5b80636540742f1461039f578063681911bc146103ba5780637e95b523146103da5780639e466298146103f6578063a023b9bf14610418578063a2f77bcc1461043857600080fd5b80633d6ae3a7116101235780633d6ae3a7146102dc578063457391e5146102f25780634df8ccb1146103055780634fd66eae1461033d5780635f81a57c1461037357806362a5dbbc1461038957600080fd5b80630a5694c21461016b578063117a5b901461019e578063129daf841461024a578063136d88831461027757806326232a2e146102b05780632c4e591b146102c6575b600080fd5b34801561017757600080fd5b5061018b610186366004611eba565b610538565b6040519081526020015b60405180910390f35b3480156101aa57600080fd5b506102326101b9366004611ee4565b6000602081905290815260409020805460018201546002830154600384015460048501546005860154600687015460078801546008909801546001600160a01b03978816989688169795969495939460ff808516956101008604821695620100008104831695630100000090910490911693909291168c565b6040516101959c9b9a99989796959493929190611f34565b34801561025657600080fd5b5061026a610265366004611fc3565b610569565b6040516101959190611fe5565b34801561028357600080fd5b50600454600554600654600854604080519485526020850193909352918301526060820152608001610195565b3480156102bc57600080fd5b5061018b60065481565b3480156102d257600080fd5b5061018b60045481565b3480156102e857600080fd5b5061018b610e1081565b61018b610300366004611ee4565b6105d5565b34801561031157600080fd5b50600754610325906001600160a01b031681565b6040516001600160a01b039091168152602001610195565b34801561034957600080fd5b5061018b610358366004611fc3565b6001600160a01b031660009081526002602052604090205490565b34801561037f57600080fd5b5061018b60055481565b34801561039557600080fd5b5061018b60085481565b3480156103ab57600080fd5b5061018b66038d7ea4c6800081565b3480156103c657600080fd5b5061018b6103d5366004612038565b6108b2565b3480156103e657600080fd5b5061018b678ac7230489e8000081565b34801561040257600080fd5b50610416610411366004611ee4565b6108e8565b005b34801561042457600080fd5b50610416610433366004612074565b610e92565b34801561044457600080fd5b50610458610453366004611ee4565b61139c565b604051610195999897969594939291906120a9565b34801561047957600080fd5b50610416610488366004611ee4565b611578565b61041661049b36600461211e565b6115e8565b3480156104ac57600080fd5b5061018b60035481565b3480156104c257600080fd5b5061018b6104d1366004611fc3565b60026020526000908152604090205481565b3480156104ef57600080fd5b506104166117f4565b34801561050457600080fd5b5061026a61051336600461211e565b6118a2565b34801561052457600080fd5b50610416610533366004611fc3565b611a19565b6001602052816000526040600020818154811061055457600080fd5b90600052602060002001600091509150505481565b6001600160a01b0381166000908152600160209081526040918290208054835181840281018401909452808452606093928301828280156105c957602002820191906000526020600020905b8154815260200190600101908083116105b5575b50505050509050919050565b600066038d7ea4c680003410806105f35750678ac7230489e8000034115b1561061157604051639de3d44160e01b815260040160405180910390fd5b816106585760405162461bcd60e51b8152602060048201526012602482015271125b9d985b1a590818dbdb5b5a5d1b595b9d60721b60448201526064015b60405180910390fd5b6003805490600061066883612156565b9091555060408051610180810182523381526000602082018190523492820192909252606081018590526080810182905291925060a08201908152602001600081526020016000815260200160006001600160a01b03168152602001428152602001610e10426106d8919061216f565b815260006020918201819052838152808252604090819020835181546001600160a01b039182166001600160a01b03199182161783559385015160018381018054929093169190951617905590830151600282015560608301516003808301919091556080840151600483015560a084015160058301805493949193909260ff199091169190849081111561076f5761076f611efd565b021790555060c082015160058201805461ff00191661010083600381111561079957610799611efd565b021790555060e082015160058201805462ff00001916620100008360038111156107c5576107c5611efd565b02179055506101008201516005820180546301000000600160b81b03191663010000006001600160a01b039093169290920291909117905561012082015160068201556101408201516007820155610160909101516008909101805460ff19169115159190911790553360009081526001602081815260408320805492830181558352822001829055600480549161085c83612156565b90915550506000818152602081815260409182902060070154825134815291820152339183917f7ed9b48d83e08a25a1572b27a365dfb386da7860c996e684e541e3433b792147910160405180910390a3919050565b60008383836040516020016108c993929190612182565b6040516020818303038152906040528051906020012090509392505050565b80600354811061090a5760405162461bcd60e51b815260040161064f906121b8565b60008281526020818152604080832081516101808101835281546001600160a01b039081168252600183015416938101939093526002810154918301919091526003808201546060840152600482015460808401526005820154869493929160a084019160ff169081111561098157610981611efd565b600381111561099257610992611efd565b81526020016005820160019054906101000a900460ff1660038111156109ba576109ba611efd565b60038111156109cb576109cb611efd565b81526020016005820160029054906101000a900460ff1660038111156109f3576109f3611efd565b6003811115610a0457610a04611efd565b81526005820154630100000090046001600160a01b039081166020830152600683015460408301526007830154606083015260089092015460ff161515608090910152815191925016331480610a6f575080602001516001600160a01b0316336001600160a01b0316145b610aaf5760405162461bcd60e51b81526020600482015260116024820152702737ba10309033b0b6b290383630bcb2b960791b604482015260640161064f565b600084815260208190526040902060078101544211610b065760405162461bcd60e51b8152602060048201526013602482015272151a5b595bdd5d081b9bdd081c995858da1959606a1b604482015260640161064f565b6002600582015462010000900460ff166003811115610b2757610b27611efd565b14610b745760405162461bcd60e51b815260206004820152601860248201527f47616d65206e6f7420696e2072657665616c2070686173650000000000000000604482015260640161064f565b600881015460ff1615610bc15760405162461bcd60e51b8152602060048201526015602482015274141c9a5e9948185b1c9958591e4818db185a5b5959605a1b604482015260640161064f565b600080600583015460ff166003811115610bdd57610bdd611efd565b14158015610c08575060006005830154610100900460ff166003811115610c0657610c06611efd565b145b15610c1e575080546001600160a01b0316610cbd565b60006005830154610100900460ff166003811115610c3e57610c3e611efd565b14158015610c6457506000600583015460ff166003811115610c6257610c62611efd565b145b15610c7d575060018101546001600160a01b0316610cbd565b60405162461bcd60e51b8152602060048201526015602482015274496e76616c69642074696d656f757420636c61696d60581b604482015260640161064f565b336001600160a01b03821614610d0d5760405162461bcd60e51b81526020600482015260156024820152744f6e6c792077696e6e65722063616e20636c61696d60581b604482015260640161064f565b60058201805462010000600160b81b03191663010000006001600160a01b0384160262ff00001916176203000017905560088201805460ff19166001179055600280830154600091610d5f91906121e5565b9050600061271060065483610d7491906121e5565b610d7e91906121fc565b90506000610d8c828461221e565b90508160086000828254610da0919061216f565b90915550506001600160a01b0384166000908152600260205260408120805491610dc983612156565b91905055506000846001600160a01b03168260405160006040518083038185875af1925050503d8060008114610e1b576040519150601f19603f3d011682016040523d82523d6000602084013e610e20565b606091505b5050905080610e42576040516312171d8360e31b815260040160405180910390fd5b846001600160a01b03168a7f4aa95f981a8337cb337de335b965507da0879c3b49f799d20058e913f5ad2c2684604051610e7e91815260200190565b60405180910390a350505050505050505050565b826003548110610eb45760405162461bcd60e51b815260040161064f906121b8565b60008481526020818152604080832081516101808101835281546001600160a01b039081168252600183015416938101939093526002810154918301919091526003808201546060840152600482015460808401526005820154889493929160a084019160ff1690811115610f2b57610f2b611efd565b6003811115610f3c57610f3c611efd565b81526020016005820160019054906101000a900460ff166003811115610f6457610f64611efd565b6003811115610f7557610f75611efd565b81526020016005820160029054906101000a900460ff166003811115610f9d57610f9d611efd565b6003811115610fae57610fae611efd565b81526005820154630100000090046001600160a01b039081166020830152600683015460408301526007830154606083015260089092015460ff161515608090910152815191925016331480611019575080602001516001600160a01b0316336001600160a01b0316145b6110595760405162461bcd60e51b81526020600482015260116024820152702737ba10309033b0b6b290383630bcb2b960791b604482015260640161064f565b60008681526020819052604090206001600582015462010000900460ff16600381111561108857611088611efd565b141580156110b557506002600582015462010000900460ff1660038111156110b2576110b2611efd565b14155b156110d35760405163ba1e766760e01b815260040160405180910390fd5b60008660038111156110e7576110e7611efd565b14806111045750600386600381111561110257611102611efd565b115b1561112257604051639c45400160e01b815260040160405180910390fd5b600086863360405160200161113993929190612182565b60408051601f19818403018152919052805160209091012082549091506001600160a01b0316330361120f578160030154811461118957604051636033c4fd60e11b815260040160405180910390fd5b6000600583015460ff1660038111156111a4576111a4611efd565b146111e45760405162461bcd60e51b815260206004820152601060248201526f105b1c9958591e481c995d99585b195960821b604482015260640161064f565b60058201805488919060ff1916600183600381111561120557611205611efd565b02179055506112bc565b8160040154811461123357604051636033c4fd60e11b815260040160405180910390fd5b60006005830154610100900460ff16600381111561125357611253611efd565b146112935760405162461bcd60e51b815260206004820152601060248201526f105b1c9958591e481c995d99585b195960821b604482015260640161064f565b60058201805488919061ff0019166101008360038111156112b6576112b6611efd565b02179055505b336001600160a01b0316887f67a65ec25115523b341c85ef61950da78cd3dea21f0b9d94d952b0f7d537c05e896040516112f69190612231565b60405180910390a36000600583015460ff16600381111561131957611319611efd565b14158015611345575060006005830154610100900460ff16600381111561134257611342611efd565b14155b156113585761135388611aad565b611392565b6001600583015462010000900460ff16600381111561137957611379611efd565b036113925760058201805462ff00001916620200001790555b5050505050505050565b60008060008060008060008060008960035481106113cc5760405162461bcd60e51b815260040161064f906121b8565b60008b81526020818152604080832081516101808101835281546001600160a01b03908116825260018301541693810193909352600281015491830191909152600380820154606084015260048201546080840152600582015460a084019160ff9091169081111561144057611440611efd565b600381111561145157611451611efd565b81526020016005820160019054906101000a900460ff16600381111561147957611479611efd565b600381111561148a5761148a611efd565b81526020016005820160029054906101000a900460ff1660038111156114b2576114b2611efd565b60038111156114c3576114c3611efd565b81526020016005820160039054906101000a90046001600160a01b03166001600160a01b03166001600160a01b0316815260200160068201548152602001600782015481526020016008820160009054906101000a900460ff16151515158152505090508060000151816020015182604001518360e001518460a001518560c001518661010001518761014001518861016001519a509a509a509a509a509a509a509a509a5050509193959799909294969850565b6007546001600160a01b031633146115a25760405162461bcd60e51b815260040161064f90612244565b6103e88111156115e35760405162461bcd60e51b815260206004820152600c60248201526b08ccaca40e8dede40d0d2ced60a31b604482015260640161064f565b600655565b81600354811061160a5760405162461bcd60e51b815260040161064f906121b8565b600083815260208190526040812090600582015462010000900460ff16600381111561163857611638611efd565b1461165657604051635c07b6d760e11b815260040160405180910390fd5b80546001600160a01b031633036116af5760405162461bcd60e51b815260206004820152601c60248201527f43616e6e6f7420706c617920616761696e737420796f757273656c6600000000604482015260640161064f565b806002015434146116fa5760405162461bcd60e51b8152602060048201526015602482015274135d5cdd081b585d18da0818995d08185b5bdd5b9d605a1b604482015260640161064f565b8261173c5760405162461bcd60e51b8152602060048201526012602482015271125b9d985b1a590818dbdb5b5a5d1b595b9d60721b604482015260640161064f565b600180820180546001600160a01b031916331790556004820184905560058201805462ff000019166201000083021790555061177a610e104261216f565b60078201553360009081526001602081815260408320805492830181558352909120018490556117ab3460026121e5565b600560008282546117bc919061216f565b9091555050604051339085907f87969bc7faf902221a147b95ceba76e011c5efb0339a0a8ee7a2bb82d9cfbbd690600090a350505050565b6007546001600160a01b0316331461181e5760405162461bcd60e51b815260040161064f90612244565b600880546000918290556007546040519192916001600160a01b039091169083908381818185875af1925050503d8060008114611877576040519150601f19603f3d011682016040523d82523d6000602084013e61187c565b606091505b505090508061189e576040516312171d8360e31b815260040160405180910390fd5b5050565b6060600060035467ffffffffffffffff8111156118c1576118c1612271565b6040519080825280602002602001820160405280156118ea578160200160208202803683370190505b5090506000845b6003548110801561190157508482105b15611976576000808281526020819052604090206005015462010000900460ff16600381111561193357611933611efd565b03611964578083838151811061194b5761194b612287565b60209081029190910101528161196081612156565b9250505b8061196e81612156565b9150506118f1565b508067ffffffffffffffff81111561199057611990612271565b6040519080825280602002602001820160405280156119b9578160200160208202803683370190505b50925060005b81811015611a10578281815181106119d9576119d9612287565b60200260200101518482815181106119f3576119f3612287565b602090810291909101015280611a0881612156565b9150506119bf565b50505092915050565b6007546001600160a01b03163314611a435760405162461bcd60e51b815260040161064f90612244565b6001600160a01b038116611a8b5760405162461bcd60e51b815260206004820152600f60248201526e496e76616c6964206164647265737360881b604482015260640161064f565b600780546001600160a01b0319166001600160a01b0392909216919091179055565b60008181526020819052604081206005810154909190611ad89060ff80821691610100900416611d74565b6005830180546203000062010000600160b81b031990911662ff00001963010000006001600160a01b038616021617179055600280840154919250600091611b1f916121e5565b9050600061271060065483611b3491906121e5565b611b3e91906121fc565b90506000611b4c828461221e565b90508160086000828254611b60919061216f565b90915550506001600160a01b03841615611c17576001600160a01b0384166000908152600260205260408120805491611b9883612156565b91905055506000846001600160a01b03168260405160006040518083038185875af1925050503d8060008114611bea576040519150601f19603f3d011682016040523d82523d6000602084013e611bef565b606091505b5050905080611c11576040516312171d8360e31b815260040160405180910390fd5b50611d06565b6000611c246002836121fc565b86546040519192506000916001600160a01b039091169083908381818185875af1925050503d8060008114611c75576040519150601f19603f3d011682016040523d82523d6000602084013e611c7a565b606091505b505060018801546040519192506000916001600160a01b039091169084908381818185875af1925050503d8060008114611cd0576040519150601f19603f3d011682016040523d82523d6000602084013e611cd5565b606091505b50509050811580611ce4575080155b15611d02576040516312171d8360e31b815260040160405180910390fd5b5050505b60088501805460ff1916600117905560058501546040516001600160a01b0386169188917f3eaa8ef3d1f3d0f08ba8d83b92f95edb50e575eccf1775c6a07647b39ec7e78f91611d649160ff8281169261010090041690879061229d565b60405180910390a3505050505050565b6000816003811115611d8857611d88611efd565b836003811115611d9a57611d9a611efd565b03611da757506000611e98565b60008080526020527fad3228b676f7d3cd4284a5443f17f1962b36e491b30a40b2405849e597ba5fb56001846003811115611de457611de4611efd565b148015611e0257506003836003811115611e0057611e00611efd565b145b80611e3a57506002846003811115611e1c57611e1c611efd565b148015611e3a57506001836003811115611e3857611e38611efd565b145b80611e7257506003846003811115611e5457611e54611efd565b148015611e7257506002836003811115611e7057611e70611efd565b145b15611e8857546001600160a01b03169050611e98565b600101546001600160a01b031690505b92915050565b80356001600160a01b0381168114611eb557600080fd5b919050565b60008060408385031215611ecd57600080fd5b611ed683611e9e565b946020939093013593505050565b600060208284031215611ef657600080fd5b5035919050565b634e487b7160e01b600052602160045260246000fd5b60048110611f3157634e487b7160e01b600052602160045260246000fd5b50565b6001600160a01b038d811682528c81166020830152604082018c9052606082018b9052608082018a9052610180820190611f6d8a611f13565b8960a0840152611f7c89611f13565b8860c0840152611f8b88611f13565b8760e08401528087166101008401525084610120830152836101408301528215156101608301529d9c50505050505050505050505050565b600060208284031215611fd557600080fd5b611fde82611e9e565b9392505050565b6020808252825182820181905260009190848201906040850190845b8181101561201d57835183529284019291840191600101612001565b50909695505050505050565b803560048110611eb557600080fd5b60008060006060848603121561204d57600080fd5b61205684612029565b92506020840135915061206b60408501611e9e565b90509250925092565b60008060006060848603121561208957600080fd5b8335925061209960208501612029565b9150604084013590509250925092565b6001600160a01b038a811682528981166020830152604082018990526101208201906120d489611f13565b8860608401526120e388611f13565b8760808401526120f287611f13565b8660a084015280861660c0840152508360e08301528215156101008301529a9950505050505050505050565b6000806040838503121561213157600080fd5b50508035926020909101359150565b634e487b7160e01b600052601160045260246000fd5b60006001820161216857612168612140565b5060010190565b80820180821115611e9857611e98612140565b61218b84611f13565b60f89390931b8352600183019190915260601b6bffffffffffffffffffffffff1916602182015260350190565b60208082526013908201527211d85b5948191bd95cc81b9bdd08195e1a5cdd606a1b604082015260600190565b8082028115828204841417611e9857611e98612140565b60008261221957634e487b7160e01b600052601260045260246000fd5b500490565b81810381811115611e9857611e98612140565b6020810161223e83611f13565b91905290565b60208082526013908201527227b7363c90383630ba3337b9369037bbb732b960691b604082015260600190565b634e487b7160e01b600052604160045260246000fd5b634e487b7160e01b600052603260045260246000fd5b606081016122aa85611f13565b8482526122b684611f13565b60208201939093526040015291905056fea2646970667358221220fbeb66202d21a3bad11ff514fd864700a3ff09b07eb355a94f80c5a6f052995364736f6c63430008140033",
+  "deployedBytecode": "0x6080604052600436106101665760003560e01c80636540742f116100d1578063aa0b59881161008a578063cdafbbb611610064578063cdafbbb6146104b6578063d0b7830b146104e3578063de92285f146104f8578063f2fde38b1461051857600080fd5b8063aa0b59881461046d578063ac9526711461048d578063b135bbb0146104a057600080fd5b80636540742f1461039f578063681911bc146103ba5780637e95b523146103da5780639e466298146103f6578063a023b9bf14610418578063a2f77bcc1461043857600080fd5b80633d6ae3a7116101235780633d6ae3a7146102dc578063457391e5146102f25780634df8ccb1146103055780634fd66eae1461033d5780635f81a57c1461037357806362a5dbbc1461038957600080fd5b80630a5694c21461016b578063117a5b901461019e578063129daf841461024a578063136d88831461027757806326232a2e146102b05780632c4e591b146102c6575b600080fd5b34801561017757600080fd5b5061018b610186366004611eba565b610538565b6040519081526020015b60405180910390f35b3480156101aa57600080fd5b506102326101b9366004611ee4565b6000602081905290815260409020805460018201546002830154600384015460048501546005860154600687015460078801546008909801546001600160a01b03978816989688169795969495939460ff808516956101008604821695620100008104831695630100000090910490911693909291168c565b6040516101959c9b9a99989796959493929190611f34565b34801561025657600080fd5b5061026a610265366004611fc3565b610569565b6040516101959190611fe5565b34801561028357600080fd5b50600454600554600654600854604080519485526020850193909352918301526060820152608001610195565b3480156102bc57600080fd5b5061018b60065481565b3480156102d257600080fd5b5061018b60045481565b3480156102e857600080fd5b5061018b610e1081565b61018b610300366004611ee4565b6105d5565b34801561031157600080fd5b50600754610325906001600160a01b031681565b6040516001600160a01b039091168152602001610195565b34801561034957600080fd5b5061018b610358366004611fc3565b6001600160a01b031660009081526002602052604090205490565b34801561037f57600080fd5b5061018b60055481565b34801561039557600080fd5b5061018b60085481565b3480156103ab57600080fd5b5061018b66038d7ea4c6800081565b3480156103c657600080fd5b5061018b6103d5366004612038565b6108b2565b3480156103e657600080fd5b5061018b678ac7230489e8000081565b34801561040257600080fd5b50610416610411366004611ee4565b6108e8565b005b34801561042457600080fd5b50610416610433366004612074565b610e92565b34801561044457600080fd5b50610458610453366004611ee4565b61139c565b604051610195999897969594939291906120a9565b34801561047957600080fd5b50610416610488366004611ee4565b611578565b61041661049b36600461211e565b6115e8565b3480156104ac57600080fd5b5061018b60035481565b3480156104c257600080fd5b5061018b6104d1366004611fc3565b60026020526000908152604090205481565b3480156104ef57600080fd5b506104166117f4565b34801561050457600080fd5b5061026a61051336600461211e565b6118a2565b34801561052457600080fd5b50610416610533366004611fc3565b611a19565b6001602052816000526040600020818154811061055457600080fd5b90600052602060002001600091509150505481565b6001600160a01b0381166000908152600160209081526040918290208054835181840281018401909452808452606093928301828280156105c957602002820191906000526020600020905b8154815260200190600101908083116105b5575b50505050509050919050565b600066038d7ea4c680003410806105f35750678ac7230489e8000034115b1561061157604051639de3d44160e01b815260040160405180910390fd5b816106585760405162461bcd60e51b8152602060048201526012602482015271125b9d985b1a590818dbdb5b5a5d1b595b9d60721b60448201526064015b60405180910390fd5b6003805490600061066883612156565b9091555060408051610180810182523381526000602082018190523492820192909252606081018590526080810182905291925060a08201908152602001600081526020016000815260200160006001600160a01b03168152602001428152602001610e10426106d8919061216f565b815260006020918201819052838152808252604090819020835181546001600160a01b039182166001600160a01b03199182161783559385015160018381018054929093169190951617905590830151600282015560608301516003808301919091556080840151600483015560a084015160058301805493949193909260ff199091169190849081111561076f5761076f611efd565b021790555060c082015160058201805461ff00191661010083600381111561079957610799611efd565b021790555060e082015160058201805462ff00001916620100008360038111156107c5576107c5611efd565b02179055506101008201516005820180546301000000600160b81b03191663010000006001600160a01b039093169290920291909117905561012082015160068201556101408201516007820155610160909101516008909101805460ff19169115159190911790553360009081526001602081815260408320805492830181558352822001829055600480549161085c83612156565b90915550506000818152602081815260409182902060070154825134815291820152339183917f7ed9b48d83e08a25a1572b27a365dfb386da7860c996e684e541e3433b792147910160405180910390a3919050565b60008383836040516020016108c993929190612182565b6040516020818303038152906040528051906020012090509392505050565b80600354811061090a5760405162461bcd60e51b815260040161064f906121b8565b60008281526020818152604080832081516101808101835281546001600160a01b039081168252600183015416938101939093526002810154918301919091526003808201546060840152600482015460808401526005820154869493929160a084019160ff169081111561098157610981611efd565b600381111561099257610992611efd565b81526020016005820160019054906101000a900460ff1660038111156109ba576109ba611efd565b60038111156109cb576109cb611efd565b81526020016005820160029054906101000a900460ff1660038111156109f3576109f3611efd565b6003811115610a0457610a04611efd565b81526005820154630100000090046001600160a01b039081166020830152600683015460408301526007830154606083015260089092015460ff161515608090910152815191925016331480610a6f575080602001516001600160a01b0316336001600160a01b0316145b610aaf5760405162461bcd60e51b81526020600482015260116024820152702737ba10309033b0b6b290383630bcb2b960791b604482015260640161064f565b600084815260208190526040902060078101544211610b065760405162461bcd60e51b8152602060048201526013602482015272151a5b595bdd5d081b9bdd081c995858da1959606a1b604482015260640161064f565b6002600582015462010000900460ff166003811115610b2757610b27611efd565b14610b745760405162461bcd60e51b815260206004820152601860248201527f47616d65206e6f7420696e2072657665616c2070686173650000000000000000604482015260640161064f565b600881015460ff1615610bc15760405162461bcd60e51b8152602060048201526015602482015274141c9a5e9948185b1c9958591e4818db185a5b5959605a1b604482015260640161064f565b600080600583015460ff166003811115610bdd57610bdd611efd565b14158015610c08575060006005830154610100900460ff166003811115610c0657610c06611efd565b145b15610c1e575080546001600160a01b0316610cbd565b60006005830154610100900460ff166003811115610c3e57610c3e611efd565b14158015610c6457506000600583015460ff166003811115610c6257610c62611efd565b145b15610c7d575060018101546001600160a01b0316610cbd565b60405162461bcd60e51b8152602060048201526015602482015274496e76616c69642074696d656f757420636c61696d60581b604482015260640161064f565b336001600160a01b03821614610d0d5760405162461bcd60e51b81526020600482015260156024820152744f6e6c792077696e6e65722063616e20636c61696d60581b604482015260640161064f565b60058201805462010000600160b81b03191663010000006001600160a01b0384160262ff00001916176203000017905560088201805460ff19166001179055600280830154600091610d5f91906121e5565b9050600061271060065483610d7491906121e5565b610d7e91906121fc565b90506000610d8c828461221e565b90508160086000828254610da0919061216f565b90915550506001600160a01b0384166000908152600260205260408120805491610dc983612156565b91905055506000846001600160a01b03168260405160006040518083038185875af1925050503d8060008114610e1b576040519150601f19603f3d011682016040523d82523d6000602084013e610e20565b606091505b5050905080610e42576040516312171d8360e31b815260040160405180910390fd5b846001600160a01b03168a7f4aa95f981a8337cb337de335b965507da0879c3b49f799d20058e913f5ad2c2684604051610e7e91815260200190565b60405180910390a350505050505050505050565b826003548110610eb45760405162461bcd60e51b815260040161064f906121b8565b60008481526020818152604080832081516101808101835281546001600160a01b039081168252600183015416938101939093526002810154918301919091526003808201546060840152600482015460808401526005820154889493929160a084019160ff1690811115610f2b57610f2b611efd565b6003811115610f3c57610f3c611efd565b81526020016005820160019054906101000a900460ff166003811115610f6457610f64611efd565b6003811115610f7557610f75611efd565b81526020016005820160029054906101000a900460ff166003811115610f9d57610f9d611efd565b6003811115610fae57610fae611efd565b81526005820154630100000090046001600160a01b039081166020830152600683015460408301526007830154606083015260089092015460ff161515608090910152815191925016331480611019575080602001516001600160a01b0316336001600160a01b0316145b6110595760405162461bcd60e51b81526020600482015260116024820152702737ba10309033b0b6b290383630bcb2b960791b604482015260640161064f565b60008681526020819052604090206001600582015462010000900460ff16600381111561108857611088611efd565b141580156110b557506002600582015462010000900460ff1660038111156110b2576110b2611efd565b14155b156110d35760405163ba1e766760e01b815260040160405180910390fd5b60008660038111156110e7576110e7611efd565b14806111045750600386600381111561110257611102611efd565b115b1561112257604051639c45400160e01b815260040160405180910390fd5b600086863360405160200161113993929190612182565b60408051601f19818403018152919052805160209091012082549091506001600160a01b0316330361120f578160030154811461118957604051636033c4fd60e11b815260040160405180910390fd5b6000600583015460ff1660038111156111a4576111a4611efd565b146111e45760405162461bcd60e51b815260206004820152601060248201526f105b1c9958591e481c995d99585b195960821b604482015260640161064f565b60058201805488919060ff1916600183600381111561120557611205611efd565b02179055506112bc565b8160040154811461123357604051636033c4fd60e11b815260040160405180910390fd5b60006005830154610100900460ff16600381111561125357611253611efd565b146112935760405162461bcd60e51b815260206004820152601060248201526f105b1c9958591e481c995d99585b195960821b604482015260640161064f565b60058201805488919061ff0019166101008360038111156112b6576112b6611efd565b02179055505b336001600160a01b0316887f67a65ec25115523b341c85ef61950da78cd3dea21f0b9d94d952b0f7d537c05e896040516112f69190612231565b60405180910390a36000600583015460ff16600381111561131957611319611efd565b14158015611345575060006005830154610100900460ff16600381111561134257611342611efd565b14155b156113585761135388611aad565b611392565b6001600583015462010000900460ff16600381111561137957611379611efd565b036113925760058201805462ff00001916620200001790555b5050505050505050565b60008060008060008060008060008960035481106113cc5760405162461bcd60e51b815260040161064f906121b8565b60008b81526020818152604080832081516101808101835281546001600160a01b03908116825260018301541693810193909352600281015491830191909152600380820154606084015260048201546080840152600582015460a084019160ff9091169081111561144057611440611efd565b600381111561145157611451611efd565b81526020016005820160019054906101000a900460ff16600381111561147957611479611efd565b600381111561148a5761148a611efd565b81526020016005820160029054906101000a900460ff1660038111156114b2576114b2611efd565b60038111156114c3576114c3611efd565b81526020016005820160039054906101000a90046001600160a01b03166001600160a01b03166001600160a01b0316815260200160068201548152602001600782015481526020016008820160009054906101000a900460ff16151515158152505090508060000151816020015182604001518360e001518460a001518560c001518661010001518761014001518861016001519a509a509a509a509a509a509a509a509a5050509193959799909294969850565b6007546001600160a01b031633146115a25760405162461bcd60e51b815260040161064f90612244565b6103e88111156115e35760405162461bcd60e51b815260206004820152600c60248201526b08ccaca40e8dede40d0d2ced60a31b604482015260640161064f565b600655565b81600354811061160a5760405162461bcd60e51b815260040161064f906121b8565b600083815260208190526040812090600582015462010000900460ff16600381111561163857611638611efd565b1461165657604051635c07b6d760e11b815260040160405180910390fd5b80546001600160a01b031633036116af5760405162461bcd60e51b815260206004820152601c60248201527f43616e6e6f7420706c617920616761696e737420796f757273656c6600000000604482015260640161064f565b806002015434146116fa5760405162461bcd60e51b8152602060048201526015602482015274135d5cdd081b585d18da0818995d08185b5bdd5b9d605a1b604482015260640161064f565b8261173c5760405162461bcd60e51b8152602060048201526012602482015271125b9d985b1a590818dbdb5b5a5d1b595b9d60721b604482015260640161064f565b600180820180546001600160a01b031916331790556004820184905560058201805462ff000019166201000083021790555061177a610e104261216f565b60078201553360009081526001602081815260408320805492830181558352909120018490556117ab3460026121e5565b600560008282546117bc919061216f565b9091555050604051339085907f87969bc7faf902221a147b95ceba76e011c5efb0339a0a8ee7a2bb82d9cfbbd690600090a350505050565b6007546001600160a01b0316331461181e5760405162461bcd60e51b815260040161064f90612244565b600880546000918290556007546040519192916001600160a01b039091169083908381818185875af1925050503d8060008114611877576040519150601f19603f3d011682016040523d82523d6000602084013e61187c565b606091505b505090508061189e576040516312171d8360e31b815260040160405180910390fd5b5050565b6060600060035467ffffffffffffffff8111156118c1576118c1612271565b6040519080825280602002602001820160405280156118ea578160200160208202803683370190505b5090506000845b6003548110801561190157508482105b15611976576000808281526020819052604090206005015462010000900460ff16600381111561193357611933611efd565b03611964578083838151811061194b5761194b612287565b60209081029190910101528161196081612156565b9250505b8061196e81612156565b9150506118f1565b508067ffffffffffffffff81111561199057611990612271565b6040519080825280602002602001820160405280156119b9578160200160208202803683370190505b50925060005b81811015611a10578281815181106119d9576119d9612287565b60200260200101518482815181106119f3576119f3612287565b602090810291909101015280611a0881612156565b9150506119bf565b50505092915050565b6007546001600160a01b03163314611a435760405162461bcd60e51b815260040161064f90612244565b6001600160a01b038116611a8b5760405162461bcd60e51b815260206004820152600f60248201526e496e76616c6964206164647265737360881b604482015260640161064f565b600780546001600160a01b0319166001600160a01b0392909216919091179055565b60008181526020819052604081206005810154909190611ad89060ff80821691610100900416611d74565b6005830180546203000062010000600160b81b031990911662ff00001963010000006001600160a01b038616021617179055600280840154919250600091611b1f916121e5565b9050600061271060065483611b3491906121e5565b611b3e91906121fc565b90506000611b4c828461221e565b90508160086000828254611b60919061216f565b90915550506001600160a01b03841615611c17576001600160a01b0384166000908152600260205260408120805491611b9883612156565b91905055506000846001600160a01b03168260405160006040518083038185875af1925050503d8060008114611bea576040519150601f19603f3d011682016040523d82523d6000602084013e611bef565b606091505b5050905080611c11576040516312171d8360e31b815260040160405180910390fd5b50611d06565b6000611c246002836121fc565b86546040519192506000916001600160a01b039091169083908381818185875af1925050503d8060008114611c75576040519150601f19603f3d011682016040523d82523d6000602084013e611c7a565b606091505b505060018801546040519192506000916001600160a01b039091169084908381818185875af1925050503d8060008114611cd0576040519150601f19603f3d011682016040523d82523d6000602084013e611cd5565b606091505b50509050811580611ce4575080155b15611d02576040516312171d8360e31b815260040160405180910390fd5b5050505b60088501805460ff1916600117905560058501546040516001600160a01b0386169188917f3eaa8ef3d1f3d0f08ba8d83b92f95edb50e575eccf1775c6a07647b39ec7e78f91611d649160ff8281169261010090041690879061229d565b60405180910390a3505050505050565b6000816003811115611d8857611d88611efd565b836003811115611d9a57611d9a611efd565b03611da757506000611e98565b60008080526020527fad3228b676f7d3cd4284a5443f17f1962b36e491b30a40b2405849e597ba5fb56001846003811115611de457611de4611efd565b148015611e0257506003836003811115611e0057611e00611efd565b145b80611e3a57506002846003811115611e1c57611e1c611efd565b148015611e3a57506001836003811115611e3857611e38611efd565b145b80611e7257506003846003811115611e5457611e54611efd565b148015611e7257506002836003811115611e7057611e70611efd565b145b15611e8857546001600160a01b03169050611e98565b600101546001600160a01b031690505b92915050565b80356001600160a01b0381168114611eb557600080fd5b919050565b60008060408385031215611ecd57600080fd5b611ed683611e9e565b946020939093013593505050565b600060208284031215611ef657600080fd5b5035919050565b634e487b7160e01b600052602160045260246000fd5b60048110611f3157634e487b7160e01b600052602160045260246000fd5b50565b6001600160a01b038d811682528c81166020830152604082018c9052606082018b9052608082018a9052610180820190611f6d8a611f13565b8960a0840152611f7c89611f13565b8860c0840152611f8b88611f13565b8760e08401528087166101008401525084610120830152836101408301528215156101608301529d9c50505050505050505050505050565b600060208284031215611fd557600080fd5b611fde82611e9e565b9392505050565b6020808252825182820181905260009190848201906040850190845b8181101561201d57835183529284019291840191600101612001565b50909695505050505050565b803560048110611eb557600080fd5b60008060006060848603121561204d57600080fd5b61205684612029565b92506020840135915061206b60408501611e9e565b90509250925092565b60008060006060848603121561208957600080fd5b8335925061209960208501612029565b9150604084013590509250925092565b6001600160a01b038a811682528981166020830152604082018990526101208201906120d489611f13565b8860608401526120e388611f13565b8760808401526120f287611f13565b8660a084015280861660c0840152508360e08301528215156101008301529a9950505050505050505050565b6000806040838503121561213157600080fd5b50508035926020909101359150565b634e487b7160e01b600052601160045260246000fd5b60006001820161216857612168612140565b5060010190565b80820180821115611e9857611e98612140565b61218b84611f13565b60f89390931b8352600183019190915260601b6bffffffffffffffffffffffff1916602182015260350190565b60208082526013908201527211d85b5948191bd95cc81b9bdd08195e1a5cdd606a1b604082015260600190565b8082028115828204841417611e9857611e98612140565b60008261221957634e487b7160e01b600052601260045260246000fd5b500490565b81810381811115611e9857611e98612140565b6020810161223e83611f13565b91905290565b60208082526013908201527227b7363c90383630ba3337b9369037bbb732b960691b604082015260600190565b634e487b7160e01b600052604160045260246000fd5b634e487b7160e01b600052603260045260246000fd5b606081016122aa85611f13565b8482526122b684611f13565b60208201939093526040015291905056fea2646970667358221220fbeb66202d21a3bad11ff514fd864700a3ff09b07eb355a94f80c5a6f052995364736f6c63430008140033",
+  "devdoc": {
+    "details": "A provably fair Rock Paper Scissors game with betting and commitment-reveal scheme",
+    "kind": "dev",
+    "methods": {
+      "claimTimeoutPrize(uint256)": {
+        "details": "Claim prize for timeout (if opponent doesn't reveal in time)",
+        "params": {
+          "_gameId": "ID of the game"
+        }
+      },
+      "createGame(bytes32)": {
+        "details": "Create a new Rock Paper Scissors game",
+        "params": {
+          "_commitment": "Player 1's commitment (hash of choice + nonce)"
+        }
+      },
+      "generateCommitment(uint8,uint256,address)": {
+        "details": "Generate commitment hash for frontend",
+        "params": {
+          "_choice": "Player's choice",
+          "_nonce": "Random nonce",
+          "_player": "Player's address"
+        }
+      },
+      "getGame(uint256)": {
+        "details": "Get game details"
+      },
+      "getOpenGames(uint256,uint256)": {
+        "details": "Get open games for joining"
+      },
+      "getPlatformStats()": {
+        "details": "Get platform statistics"
+      },
+      "getPlayerGames(address)": {
+        "details": "Get player's game history"
+      },
+      "getPlayerStats(address)": {
+        "details": "Get player statistics"
+      },
+      "joinGame(uint256,bytes32)": {
+        "details": "Join an existing game as player 2",
+        "params": {
+          "_commitment": "Player 2's commitment",
+          "_gameId": "ID of the game to join"
+        }
+      },
+      "revealChoice(uint256,uint8,uint256)": {
+        "details": "Reveal player's choice",
+        "params": {
+          "_choice": "Player's actual choice",
+          "_gameId": "ID of the game",
+          "_nonce": "Nonce used in commitment"
+        }
+      },
+      "transferOwnership(address)": {
+        "details": "Transfer ownership"
+      },
+      "updatePlatformFee(uint256)": {
+        "details": "Update platform fee (only owner)"
+      },
+      "withdrawPlatformFees()": {
+        "details": "Withdraw platform fees"
+      }
+    },
+    "title": "RockPaperScissors",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 45,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "games",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_uint256,t_struct(Game)40_storage)"
+      },
+      {
+        "astId": 50,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "playerGames",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_address,t_array(t_uint256)dyn_storage)"
+      },
+      {
+        "astId": 54,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "playerStats",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_mapping(t_address,t_uint256)"
+      },
+      {
+        "astId": 56,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "nextGameId",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 58,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "totalGames",
+        "offset": 0,
+        "slot": "4",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 60,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "totalVolume",
+        "offset": 0,
+        "slot": "5",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 63,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "platformFee",
+        "offset": 0,
+        "slot": "6",
+        "type": "t_uint256"
+      },
+      {
+        "astId": 65,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "platformOwner",
+        "offset": 0,
+        "slot": "7",
+        "type": "t_address"
+      },
+      {
+        "astId": 67,
+        "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+        "label": "platformBalance",
+        "offset": 0,
+        "slot": "8",
+        "type": "t_uint256"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_uint256)dyn_storage": {
+        "base": "t_uint256",
+        "encoding": "dynamic_array",
+        "label": "uint256[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_enum(Choice)7": {
+        "encoding": "inplace",
+        "label": "enum RockPaperScissors.Choice",
+        "numberOfBytes": "1"
+      },
+      "t_enum(GameState)12": {
+        "encoding": "inplace",
+        "label": "enum RockPaperScissors.GameState",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_array(t_uint256)dyn_storage)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => uint256[])",
+        "numberOfBytes": "32",
+        "value": "t_array(t_uint256)dyn_storage"
+      },
+      "t_mapping(t_address,t_uint256)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => uint256)",
+        "numberOfBytes": "32",
+        "value": "t_uint256"
+      },
+      "t_mapping(t_uint256,t_struct(Game)40_storage)": {
+        "encoding": "mapping",
+        "key": "t_uint256",
+        "label": "mapping(uint256 => struct RockPaperScissors.Game)",
+        "numberOfBytes": "32",
+        "value": "t_struct(Game)40_storage"
+      },
+      "t_struct(Game)40_storage": {
+        "encoding": "inplace",
+        "label": "struct RockPaperScissors.Game",
+        "members": [
+          {
+            "astId": 14,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "player1",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 16,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "player2",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address"
+          },
+          {
+            "astId": 18,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "betAmount",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 20,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "player1Commitment",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 22,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "player2Commitment",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_bytes32"
+          },
+          {
+            "astId": 25,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "player1Choice",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_enum(Choice)7"
+          },
+          {
+            "astId": 28,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "player2Choice",
+            "offset": 1,
+            "slot": "5",
+            "type": "t_enum(Choice)7"
+          },
+          {
+            "astId": 31,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "state",
+            "offset": 2,
+            "slot": "5",
+            "type": "t_enum(GameState)12"
+          },
+          {
+            "astId": 33,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "winner",
+            "offset": 3,
+            "slot": "5",
+            "type": "t_address"
+          },
+          {
+            "astId": 35,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "createdAt",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 37,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "deadline",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 39,
+            "contract": "contracts/RockPaperScissors.sol:RockPaperScissors",
+            "label": "prizeClaimed",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_bool"
+          }
+        ],
+        "numberOfBytes": "288"
+      },
+      "t_uint256": {
+        "encoding": "inplace",
+        "label": "uint256",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

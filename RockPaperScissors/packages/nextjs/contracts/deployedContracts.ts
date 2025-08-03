@@ -6,28 +6,67 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   8453: {
-    PiggyBank: {
-      address: "0x4C3f2c2909C0E677ef0403b6B1dF09348431631d",
+    RockPaperScissors: {
+      address: "0xe2fcD718EaFDb5FE14Bea19D6B395b365c4CC7c6",
       abi: [
         {
           inputs: [],
-          name: "NoDeposit",
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [],
+          name: "GameExpired",
           type: "error",
         },
         {
           inputs: [],
-          name: "NoSavings",
+          name: "GameNotInCommitPhase",
           type: "error",
         },
         {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "timeRemaining",
-              type: "uint256",
-            },
-          ],
-          name: "StillLocked",
+          inputs: [],
+          name: "GameNotInRevealPhase",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "GameNotOpen",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "InvalidBetAmount",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "InvalidChoice",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "InvalidCommitment",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotGamePlayer",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "PlayerAlreadyInGame",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "PrizeAlreadyClaimed",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "RevealTimeoutNotReached",
           type: "error",
         },
         {
@@ -36,12 +75,160 @@ const deployedContracts = {
           type: "error",
         },
         {
+          inputs: [],
+          name: "UnauthorizedAccess",
+          type: "error",
+        },
+        {
           anonymous: false,
           inputs: [
             {
               indexed: true,
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
               internalType: "address",
-              name: "user",
+              name: "player",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "enum RockPaperScissors.Choice",
+              name: "choice",
+              type: "uint8",
+            },
+          ],
+          name: "ChoiceRevealed",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "player",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bytes32",
+              name: "commitment",
+              type: "bytes32",
+            },
+          ],
+          name: "CommitmentMade",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "player1",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "betAmount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+          ],
+          name: "GameCreated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "winner",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "enum RockPaperScissors.Choice",
+              name: "player1Choice",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "enum RockPaperScissors.Choice",
+              name: "player2Choice",
+              type: "uint8",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "prize",
+              type: "uint256",
+            },
+          ],
+          name: "GameFinished",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "player2",
+              type: "address",
+            },
+          ],
+          name: "PlayerJoined",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "winner",
               type: "address",
             },
             {
@@ -50,84 +237,39 @@ const deployedContracts = {
               name: "amount",
               type: "uint256",
             },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
           ],
-          name: "Deposit",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "PiggyBankSmashed",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "Withdrawal",
+          name: "PrizeClaimed",
           type: "event",
         },
         {
           inputs: [],
-          name: "addFunds",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [
+          name: "MAX_BET",
+          outputs: [
             {
               internalType: "uint256",
-              name: "_lockDurationInSeconds",
+              name: "",
               type: "uint256",
             },
           ],
-          name: "createPiggyBank",
-          outputs: [],
-          stateMutability: "payable",
+          stateMutability: "view",
           type: "function",
         },
         {
           inputs: [],
-          name: "emergencyWithdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
+          name: "MIN_BET",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
           type: "function",
         },
         {
           inputs: [],
-          name: "getCurrentTime",
+          name: "REVEAL_TIMEOUT",
           outputs: [
             {
               internalType: "uint256",
@@ -141,17 +283,133 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "string",
-              name: "duration",
-              type: "string",
+              internalType: "uint256",
+              name: "_gameId",
+              type: "uint256",
             },
           ],
-          name: "getLockDuration",
+          name: "claimTimeoutPrize",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes32",
+              name: "_commitment",
+              type: "bytes32",
+            },
+          ],
+          name: "createGame",
           outputs: [
+            {
+              internalType: "uint256",
+              name: "gameId",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [
             {
               internalType: "uint256",
               name: "",
               type: "uint256",
+            },
+          ],
+          name: "games",
+          outputs: [
+            {
+              internalType: "address",
+              name: "player1",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "player2",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "betAmount",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "player1Commitment",
+              type: "bytes32",
+            },
+            {
+              internalType: "bytes32",
+              name: "player2Commitment",
+              type: "bytes32",
+            },
+            {
+              internalType: "enum RockPaperScissors.Choice",
+              name: "player1Choice",
+              type: "uint8",
+            },
+            {
+              internalType: "enum RockPaperScissors.Choice",
+              name: "player2Choice",
+              type: "uint8",
+            },
+            {
+              internalType: "enum RockPaperScissors.GameState",
+              name: "state",
+              type: "uint8",
+            },
+            {
+              internalType: "address",
+              name: "winner",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "createdAt",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+            {
+              internalType: "bool",
+              name: "prizeClaimed",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "enum RockPaperScissors.Choice",
+              name: "_choice",
+              type: "uint8",
+            },
+            {
+              internalType: "uint256",
+              name: "_nonce",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "_player",
+              type: "address",
+            },
+          ],
+          name: "generateCommitment",
+          outputs: [
+            {
+              internalType: "bytes32",
+              name: "",
+              type: "bytes32",
             },
           ],
           stateMutability: "pure",
@@ -160,31 +418,56 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "user",
-              type: "address",
+              internalType: "uint256",
+              name: "_gameId",
+              type: "uint256",
             },
           ],
-          name: "getPiggyBank",
+          name: "getGame",
           outputs: [
             {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
+              internalType: "address",
+              name: "player1",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "player2",
+              type: "address",
             },
             {
               internalType: "uint256",
-              name: "unlockTime",
+              name: "betAmount",
+              type: "uint256",
+            },
+            {
+              internalType: "enum RockPaperScissors.GameState",
+              name: "state",
+              type: "uint8",
+            },
+            {
+              internalType: "enum RockPaperScissors.Choice",
+              name: "player1Choice",
+              type: "uint8",
+            },
+            {
+              internalType: "enum RockPaperScissors.Choice",
+              name: "player2Choice",
+              type: "uint8",
+            },
+            {
+              internalType: "address",
+              name: "winner",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "deadline",
               type: "uint256",
             },
             {
               internalType: "bool",
-              name: "isUnlocked",
-              type: "bool",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
+              name: "prizeClaimed",
               type: "bool",
             },
           ],
@@ -194,16 +477,181 @@ const deployedContracts = {
         {
           inputs: [
             {
-              internalType: "address",
-              name: "user",
-              type: "address",
+              internalType: "uint256",
+              name: "_start",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_limit",
+              type: "uint256",
             },
           ],
-          name: "getTimeLeft",
+          name: "getOpenGames",
+          outputs: [
+            {
+              internalType: "uint256[]",
+              name: "openGames",
+              type: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getPlatformStats",
           outputs: [
             {
               internalType: "uint256",
-              name: "timeLeft",
+              name: "_totalGames",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_totalVolume",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_platformFee",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_platformBalance",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_player",
+              type: "address",
+            },
+          ],
+          name: "getPlayerGames",
+          outputs: [
+            {
+              internalType: "uint256[]",
+              name: "",
+              type: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_player",
+              type: "address",
+            },
+          ],
+          name: "getPlayerStats",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "wins",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_gameId",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes32",
+              name: "_commitment",
+              type: "bytes32",
+            },
+          ],
+          name: "joinGame",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "nextGameId",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "platformBalance",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "platformFee",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "platformOwner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "playerGames",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
               type: "uint256",
             },
           ],
@@ -218,22 +666,48 @@ const deployedContracts = {
               type: "address",
             },
           ],
-          name: "piggyBanks",
+          name: "playerStats",
           outputs: [
             {
               internalType: "uint256",
-              name: "amount",
+              name: "",
               type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_gameId",
+              type: "uint256",
+            },
+            {
+              internalType: "enum RockPaperScissors.Choice",
+              name: "_choice",
+              type: "uint8",
             },
             {
               internalType: "uint256",
-              name: "unlockTime",
+              name: "_nonce",
               type: "uint256",
             },
+          ],
+          name: "revealChoice",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "totalGames",
+          outputs: [
             {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
             },
           ],
           stateMutability: "view",
@@ -241,518 +715,53 @@ const deployedContracts = {
         },
         {
           inputs: [],
-          name: "withdraw",
+          name: "totalVolume",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_newOwner",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
         {
-          stateMutability: "payable",
-          type: "receive",
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_newFee",
+              type: "uint256",
+            },
+          ],
+          name: "updatePlatformFee",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdrawPlatformFees",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 33131137,
-    },
-  },
-  31337: {
-    PiggyBank: {
-      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      abi: [
-        {
-          inputs: [],
-          name: "NoDeposit",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "NoSavings",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "timeRemaining",
-              type: "uint256",
-            },
-          ],
-          name: "StillLocked",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "TransferFailed",
-          type: "error",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-          ],
-          name: "Deposit",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "PiggyBankSmashed",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "Withdrawal",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "addFunds",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_lockDurationInSeconds",
-              type: "uint256",
-            },
-          ],
-          name: "createPiggyBank",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "emergencyWithdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "getCurrentTime",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "duration",
-              type: "string",
-            },
-          ],
-          name: "getLockDuration",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getPiggyBank",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "isUnlocked",
-              type: "bool",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getTimeLeft",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "timeLeft",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "piggyBanks",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
-        },
-      ],
-      inheritedFunctions: {},
-      deployedOnBlock: 2,
-    },
-  },
-  11155111: {
-    PiggyBank: {
-      address: "0x45d98693F831809401AEc01694b9F6956ad553E8",
-      abi: [
-        {
-          inputs: [],
-          name: "NoDeposit",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "NoSavings",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "timeRemaining",
-              type: "uint256",
-            },
-          ],
-          name: "StillLocked",
-          type: "error",
-        },
-        {
-          inputs: [],
-          name: "TransferFailed",
-          type: "error",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-          ],
-          name: "Deposit",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "PiggyBankSmashed",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-          ],
-          name: "Withdrawal",
-          type: "event",
-        },
-        {
-          inputs: [],
-          name: "addFunds",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "_lockDurationInSeconds",
-              type: "uint256",
-            },
-          ],
-          name: "createPiggyBank",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "emergencyWithdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "getCurrentTime",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "duration",
-              type: "string",
-            },
-          ],
-          name: "getLockDuration",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "pure",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getPiggyBank",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "isUnlocked",
-              type: "bool",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "user",
-              type: "address",
-            },
-          ],
-          name: "getTimeLeft",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "timeLeft",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          name: "piggyBanks",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "amount",
-              type: "uint256",
-            },
-            {
-              internalType: "uint256",
-              name: "unlockTime",
-              type: "uint256",
-            },
-            {
-              internalType: "bool",
-              name: "exists",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
-        },
-      ],
-      inheritedFunctions: {},
-      deployedOnBlock: 8807083,
+      deployedOnBlock: 33641722,
     },
   },
 } as const;

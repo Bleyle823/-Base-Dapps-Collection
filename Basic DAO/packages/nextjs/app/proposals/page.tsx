@@ -6,6 +6,16 @@ import { formatEther, parseEther } from "viem";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Address } from "~~/components/scaffold-eth";
 import { notification } from "~~/utils/scaffold-eth";
+import { 
+  DocumentTextIcon, 
+  UserIcon, 
+  ClockIcon, 
+  CheckCircleIcon, 
+  XCircleIcon, 
+  PlayIcon,
+  PlusIcon,
+  ChartBarIcon
+} from "@heroicons/react/24/outline";
 
 interface Proposal {
   id: number;
@@ -30,6 +40,8 @@ const ProposalsPage = () => {
     recipient: "",
   });
   const [selectedProposal, setSelectedProposal] = useState<number | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Read contract data
   const { data: nextProposalId } = useScaffoldReadContract({
@@ -53,6 +65,7 @@ const ProposalsPage = () => {
     const loadProposals = async () => {
       if (!nextProposalId) return;
       
+      setLoading(true);
       const proposalPromises = [];
       for (let i = 1; i < Number(nextProposalId); i++) {
         proposalPromises.push(
@@ -64,6 +77,7 @@ const ProposalsPage = () => {
       
       const proposalResults = await Promise.all(proposalPromises);
       setProposals(proposalResults.filter(Boolean));
+      setLoading(false);
     };
 
     loadProposals();
@@ -86,6 +100,7 @@ const ProposalsPage = () => {
 
       notification.success("Proposal created successfully!");
       setNewProposal({ description: "", amount: "", recipient: "" });
+      setShowCreateForm(false);
       
       // Reload proposals
       window.location.reload();
@@ -144,22 +159,56 @@ const ProposalsPage = () => {
     return `${minutes}m remaining`;
   };
 
+  const getProposalStatus = (proposal: Proposal) => {
+    if (proposal.executed) return { status: "Executed", color: "success", icon: CheckCircleIcon };
+    if (!proposal.isActive) {
+      if (proposal.votesFor > proposal.votesAgainst) {
+        return { status: "Approved", color: "success", icon: CheckCircleIcon };
+      } else {
+        return { status: "Rejected", color: "error", icon: XCircleIcon };
+      }
+    }
+    return { status: "Active", color: "info", icon: ClockIcon };
+  };
+
+  const getVotePercentage = (votesFor: bigint, votesAgainst: bigint) => {
+    const total = Number(votesFor) + Number(votesAgainst);
+    if (total === 0) return { for: 0, against: 0 };
+    return {
+      for: Math.round((Number(votesFor) / total) * 100),
+      against: Math.round((Number(votesAgainst) / total) * 100)
+    };
+  };
+
   return (
     <div className="flex items-center flex-col grow pt-10">
       <div className="px-5 w-full max-w-6xl">
-        <h1 className="text-center text-4xl font-bold mb-8">DAO Proposals</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold">DAO Proposals</h1>
+          {isMember?.[0] && (
+            <button
+              className="btn btn-primary gap-2"
+              onClick={() => setShowCreateForm(!showCreateForm)}
+            >
+              <PlusIcon className="h-5 w-5" />
+              Create Proposal
+            </button>
+          )}
+        </div>
         
         {/* Create Proposal Section */}
-        {isMember?.[0] && (
-          <div className="bg-base-100 rounded-3xl p-8 mb-8">
-            <h2 className="text-2xl font-bold mb-6">Create New Proposal</h2>
-            <div className="space-y-4">
+        {showCreateForm && isMember?.[0] && (
+          <div className="bg-base-100 rounded-3xl p-8 mb-8 shadow-lg border border-base-300">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <DocumentTextIcon className="h-6 w-6" />
+              Create New Proposal
+            </h2>
+            <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">Description</label>
                 <textarea
-                  className="textarea textarea-bordered w-full"
-                  rows={4}
-                  placeholder="Describe your proposal..."
+                  className="textarea textarea-bordered w-full h-24"
+                  placeholder="Describe your proposal in detail..."
                   value={newProposal.description}
                   onChange={(e) => setNewProposal({ ...newProposal, description: e.target.value })}
                 />
@@ -187,100 +236,155 @@ const ProposalsPage = () => {
                   />
                 </div>
               </div>
-              <button
-                className="btn btn-primary"
-                onClick={handleCreateProposal}
-              >
-                Create Proposal
-              </button>
+              <div className="flex gap-3">
+                <button
+                  className="btn btn-primary"
+                  onClick={handleCreateProposal}
+                >
+                  Create Proposal
+                </button>
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setShowCreateForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         )}
 
         {/* Proposals List */}
         <div className="space-y-6">
-          {proposals.length === 0 ? (
+          {loading ? (
             <div className="text-center py-12">
+              <div className="loading loading-spinner loading-lg"></div>
+              <p className="mt-4 text-lg">Loading proposals...</p>
+            </div>
+          ) : proposals.length === 0 ? (
+            <div className="text-center py-12">
+              <DocumentTextIcon className="h-16 w-16 text-base-content/30 mx-auto mb-4" />
               <p className="text-lg">No proposals yet. Be the first to create one!</p>
+              {isMember?.[0] && (
+                <button
+                  className="btn btn-primary mt-4"
+                  onClick={() => setShowCreateForm(true)}
+                >
+                  Create First Proposal
+                </button>
+              )}
             </div>
           ) : (
-            proposals.map((proposal) => (
-              <div key={proposal.id} className="bg-base-100 rounded-3xl p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold">Proposal #{proposal.id}</h3>
-                    <p className="text-sm opacity-70">
-                      Proposed by: <Address address={proposal.proposer} />
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <div className={`badge ${proposal.isActive ? 'badge-success' : proposal.executed ? 'badge-info' : 'badge-error'}`}>
-                      {proposal.isActive ? 'Active' : proposal.executed ? 'Executed' : 'Failed/Expired'}
+            proposals.map((proposal) => {
+              const status = getProposalStatus(proposal);
+              const votePercentages = getVotePercentage(proposal.votesFor, proposal.votesAgainst);
+              const StatusIcon = status.icon;
+              
+              return (
+                <div key={proposal.id} className="bg-base-100 rounded-3xl p-6 shadow-lg border border-base-300 hover:shadow-xl transition-shadow">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-xl font-bold">Proposal #{proposal.id}</h3>
+                        <div className={`badge badge-${status.color} gap-1`}>
+                          <StatusIcon className="h-4 w-4" />
+                          {status.status}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-base-content/70">
+                        <UserIcon className="h-4 w-4" />
+                        <span>Proposed by:</span>
+                        <Address address={proposal.proposer} />
+                      </div>
                     </div>
-                    <p className="text-sm mt-1">{formatTimeRemaining(proposal.endTime)}</p>
+                    <div className="text-right">
+                      <div className="flex items-center gap-2 text-sm text-base-content/70">
+                        <ClockIcon className="h-4 w-4" />
+                        <span>{formatTimeRemaining(proposal.endTime)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <p className="text-base leading-relaxed">{proposal.description}</p>
+                  </div>
+
+                  {proposal.amount > 0n && (
+                    <div className="mb-6 p-4 bg-base-200 rounded-2xl">
+                      <div className="flex items-center gap-2 mb-2">
+                        <ChartBarIcon className="h-5 w-5 text-primary" />
+                        <span className="font-semibold">Fund Transfer</span>
+                      </div>
+                      <p className="text-sm">
+                        <strong>{formatEther(proposal.amount)} ETH</strong> to{" "}
+                        <Address address={proposal.recipient} />
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Voting Results */}
+                  <div className="mb-6">
+                    <div className="flex justify-between items-center mb-3">
+                      <h4 className="font-semibold">Voting Results</h4>
+                      <span className="text-sm text-base-content/70">
+                        {proposal.votesFor.toString()} For • {proposal.votesAgainst.toString()} Against
+                      </span>
+                    </div>
+                    <div className="w-full bg-base-300 rounded-full h-3 mb-2">
+                      <div 
+                        className="bg-success h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${votePercentages.for}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-success font-medium">{votePercentages.for}% For</span>
+                      <span className="text-error font-medium">{votePercentages.against}% Against</span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 justify-center">
+                    {isMember?.[0] && proposal.isActive && (
+                      <>
+                        <button
+                          className="btn btn-success gap-2"
+                          onClick={() => handleVote(proposal.id, true)}
+                        >
+                          <CheckCircleIcon className="h-4 w-4" />
+                          Vote For
+                        </button>
+                        <button
+                          className="btn btn-error gap-2"
+                          onClick={() => handleVote(proposal.id, false)}
+                        >
+                          <XCircleIcon className="h-4 w-4" />
+                          Vote Against
+                        </button>
+                      </>
+                    )}
+
+                    {!proposal.isActive && !proposal.executed && proposal.votesFor > proposal.votesAgainst && (
+                      <button
+                        className="btn btn-primary gap-2"
+                        onClick={() => handleExecute(proposal.id)}
+                      >
+                        <PlayIcon className="h-4 w-4" />
+                        Execute Proposal
+                      </button>
+                    )}
                   </div>
                 </div>
-
-                <p className="mb-4">{proposal.description}</p>
-
-                {proposal.amount > 0n && (
-                  <div className="mb-4 p-3 bg-base-200 rounded-lg">
-                    <p className="text-sm">
-                      <strong>Transfer:</strong> {formatEther(proposal.amount)} ETH to{" "}
-                      <Address address={proposal.recipient} />
-                    </p>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="text-center">
-                    <p className="text-sm opacity-70">Votes For</p>
-                    <p className="text-2xl font-bold text-success">{proposal.votesFor.toString()}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm opacity-70">Votes Against</p>
-                    <p className="text-2xl font-bold text-error">{proposal.votesAgainst.toString()}</p>
-                  </div>
-                </div>
-
-                {/* Voting Buttons */}
-                {isMember?.[0] && proposal.isActive && (
-                  <div className="flex gap-2 justify-center">
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleVote(proposal.id, true)}
-                    >
-                      Vote For
-                    </button>
-                    <button
-                      className="btn btn-error"
-                      onClick={() => handleVote(proposal.id, false)}
-                    >
-                      Vote Against
-                    </button>
-                  </div>
-                )}
-
-                {/* Execute Button */}
-                {!proposal.isActive && !proposal.executed && proposal.votesFor > proposal.votesAgainst && (
-                  <div className="flex justify-center">
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleExecute(proposal.id)}
-                    >
-                      Execute Proposal
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
         {!isMember?.[0] && (
-          <div className="text-center mt-8 p-6 bg-base-200 rounded-3xl">
-            <p className="text-lg">You must be a DAO member to create proposals and vote.</p>
-            <p className="text-sm opacity-70 mt-2">Contact the DAO admin to become a member.</p>
+          <div className="text-center mt-8 p-8 bg-base-200 rounded-3xl">
+            <UserIcon className="h-12 w-12 text-base-content/50 mx-auto mb-4" />
+            <h3 className="text-xl font-bold mb-2">Members Only</h3>
+            <p className="text-lg mb-4">You must be a DAO member to create proposals and vote.</p>
+            <p className="text-sm opacity-70">Contact the DAO admin to become a member.</p>
           </div>
         )}
       </div>

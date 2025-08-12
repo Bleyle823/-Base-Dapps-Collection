@@ -1,88 +1,96 @@
-# 🏗 Scaffold-ETH 2
+## Paywall DApp — PiggyBank (Time‑Locked Savings)
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+This dApp lets users deposit ETH into a personal piggy bank and withdraw only after a chosen lock period. It includes a friendly UI, a local block explorer, and a debug view.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+### Features
 
-⚙️ Built using NextJS, RainbowKit, Foundry/Hardhat, Wagmi, Viem, and Typescript.
+- Time‑locked savings with selectable durations (hour, day, week, month, year)
+- Add funds to an existing lock
+- Withdraw once unlocked; emergency withdraw with penalty
+- Built‑in block explorer and contract debug pages
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+### Tech Stack
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+- Next.js, TypeScript, Tailwind/DaisyUI
+- wagmi + viem + RainbowKit
+- Hardhat + hardhat‑deploy
+- Scaffold‑ETH 2 tooling
 
-## Requirements
+---
 
-Before you begin, you need to install the following tools:
+## Contracts
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+The frontend is wired to a `PiggyBank` contract via `packages/nextjs/contracts/deployedContracts.ts`:
+
+- Base Mainnet (8453): `PiggyBank` at `0x4C3f2c2909C0E677ef0403b6B1dF09348431631d`
+- Hardhat local (31337): `PiggyBank` at `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512`
+- Sepolia (11155111): `PiggyBank` at `0x45d98693F831809401AEc01694b9F6956ad553E8`
+
+If you deploy a different address, update `packages/nextjs/contracts/deployedContracts.ts` accordingly.
+
+Note: The Hardhat package currently contains `RandomPacket.sol` and a deploy script for `RandomPacket`. The UI in this app targets `PiggyBank`. You can either:
+
+- Keep using the preconfigured `PiggyBank` addresses above; or
+- Replace the deploy script and contract in `packages/hardhat` with `PiggyBank` and redeploy; or
+- Modify the UI to interact with `RandomPacket` instead of `PiggyBank`.
+
+---
 
 ## Quickstart
 
-To get started with Scaffold-ETH 2, follow the steps below:
+Prerequisites: Node 20+, Yarn 1.x, Git
 
-1. Install the latest version of Scaffold-ETH 2
+1) Terminal A — Local chain
 
-```
-npx create-eth@latest
-```
-
-This command will install all the necessary packages and dependencies, so it might take a while.
-
-> [!NOTE]
-> You can also initialize your project with one of our extensions to add specific features or starter-kits. Learn more in our [extensions documentation](https://docs.scaffoldeth.io/extensions/).
-
-2. Run a local network in the first terminal:
-
-```
+```bash
+cd "Paywall DApp/packages/hardhat"
+yarn
 yarn chain
 ```
 
-This command starts a local Ethereum network that runs on your local machine and can be used for testing and development. Learn how to [customize your network configuration](https://docs.scaffoldeth.io/quick-start/environment#1-initialize-a-local-blockchain).
+2) Terminal B — (Optional) Compile/deploy
 
-3. On a second terminal, deploy the test contract:
-
+```bash
+cd "Paywall DApp/packages/hardhat"
+yarn
+yarn compile
+# If you adapt the deploy script to PiggyBank, then:
+# yarn deploy
 ```
-yarn deploy
-```
 
-This command deploys a test smart contract to the local network. You can find more information about how to customize your contract and deployment script in our [documentation](https://docs.scaffoldeth.io/quick-start/environment#2-deploy-your-smart-contract).
+3) Terminal C — Frontend
 
-4. On a third terminal, start your NextJS app:
-
-```
+```bash
+cd "Paywall DApp/packages/nextjs"
+yarn
 yarn start
+# visit http://localhost:3000
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+---
 
-**What's next**:
+## Using the App
 
-Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-start/environment#whats-next) to learn how to:
+- Connect your wallet and open the `PiggyBank` page.
+- Create a piggy bank by depositing ETH and selecting a lock duration.
+- Add funds anytime. Withdraw once the lock expires.
+- Emergency withdraw is available with a penalty.
 
-- Edit your smart contracts
-- Edit your deployment scripts
-- Customize your frontend
-- Edit the app config
-- Writing and running tests
-- [Setting up external services and API keys](https://docs.scaffoldeth.io/deploying/deploy-smart-contracts#configuration-of-third-party-services-for-production-grade-apps)
+Key contract methods used by the UI:
 
-## Documentation
+- `createPiggyBank(uint256 lockSeconds)` (payable)
+- `addFunds()` (payable)
+- `withdraw()`
+- `emergencyWithdraw()`
+- `getPiggyBank(address user)` and `getTimeLeft(address user)`
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
+---
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+## Developer Notes
 
-## Contributing to Scaffold-ETH 2
+- To fully align Hardhat with the UI, replace `packages/hardhat/contracts/RandomPacket.sol` with a `PiggyBank` contract and update `deploy/00_deploy_your_contract.ts` to deploy it.
+- To target Base Mainnet or Sepolia from the UI, keep or update the addresses in `deployedContracts.ts`.
 
-We welcome contributions to Scaffold-ETH 2!
+## License
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+MIT
